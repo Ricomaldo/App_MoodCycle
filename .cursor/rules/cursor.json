@@ -1,0 +1,18 @@
+{
+    "language": "typescript",
+    "conventions": {
+      "codeStyle": "airbnb",
+      "indentation": "spaces",
+      "spacesPerIndent": 2
+    },
+    "projectType": "react-native",
+    "architecture": "mvvm-clean",
+    "contextBehavior": {
+      "includeDocumentation": true,
+      "maxFileContext": 15,
+      "relevantPatterns": [
+        "src/**/*.{ts,tsx}",
+        "docs/**/*.md"
+      ]
+    }
+  }
