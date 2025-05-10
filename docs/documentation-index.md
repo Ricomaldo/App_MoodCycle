@@ -30,6 +30,7 @@
 - `ressource-guide-developpement.md` : Guide complet pour les développeurs
 - `ressource-conventions-code.md` : Conventions de codage et bonnes pratiques
 - `ressource-configuration-environnement.md` : Configuration de l'environnement de développement
+- `documentation-structure.md` : Guide d'organisation de la documentation
 
 ## 7. Archives
 - `archive-documents-initiaux/` : Dossier contenant les versions initiales des documents
@@ -38,7 +39,7 @@
 - `archive-versions-anciennes/` : Versions précédentes des documents du projet
 
 ## Dernière mise à jour
-Date : 29/04/2025
+Date : 30/04/2025
 Version : MVP 1.2
 
 ## Notes
