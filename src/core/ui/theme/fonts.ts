@@ -12,24 +12,9 @@ export const fonts = {
 } as const;
 
 export const fontWeights = {
-  light: Platform.select({
-    ios: '300',
-    android: '300'
-  }),
-  regular: Platform.select({
-    ios: '400',
-    android: '400'
-  }),
-  medium: Platform.select({
-    ios: '500',
-    android: '500'
-  }),
-  semiBold: Platform.select({
-    ios: '600',
-    android: '600'
-  }),
-  bold: Platform.select({
-    ios: '700',
-    android: '700'
-  })
+  light: '300',
+  regular: '400',
+  medium: '500',
+  semiBold: '600',
+  bold: '700'
 } as const; 

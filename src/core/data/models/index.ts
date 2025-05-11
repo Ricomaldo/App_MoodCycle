@@ -1,6 +1,6 @@
 import { Database } from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
-import schema from './schema';
+import { schema } from './schema';
 import CycleModel from './CycleModel';
 import ConversationModel from './ConversationModel';
 import MessageModel from './MessageModel';

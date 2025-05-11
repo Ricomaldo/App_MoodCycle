@@ -23,8 +23,12 @@ export class ConversationViewModel {
     
     try {
       this.conversation = await this.conversationRepository.getCurrentConversation();
-    } catch (error) {
-      this.error = error.message;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.error = error.message;
+      } else {
+        this.error = 'Une erreur inconnue est survenue lors du chargement de la conversation';
+      }
     } finally {
       this.isLoading = false;
     }
@@ -44,8 +48,12 @@ export class ConversationViewModel {
 
       await this.conversationRepository.saveMessage(this.conversation.id, message);
       await this.loadConversation();
-    } catch (error) {
-      this.error = error.message;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.error = error.message;
+      } else {
+        this.error = 'Une erreur inconnue est survenue lors de l\'envoi du message';
+      }
     } finally {
       this.isSending = false;
     }

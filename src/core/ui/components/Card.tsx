@@ -1,29 +1,64 @@
-import styled from 'styled-components/native';
-import { Theme } from '../../../core/ui/theme/theme';
-import { StyledProps } from '../../../core/ui/theme/styled';
+import React from 'react';
+import { View, StyleSheet, ViewStyle } from 'react-native';
+import { theme } from '../theme/theme';
 
 interface CardProps {
+  children: React.ReactNode;
   variant?: 'elevated' | 'outlined' | 'filled';
-  padding?: keyof Theme['spacing'];
+  padding?: 'sm' | 'md' | 'lg';
+  style?: ViewStyle;
 }
 
-export const Card = styled.View<StyledProps<CardProps>>`
-  padding: ${({ theme, padding = 'md' }) => theme.spacing[padding]}px;
-  border-radius: ${({ theme }) => theme.borderRadius.md}px;
-  background-color: ${({ theme, variant = 'elevated' }) => 
-    variant === 'filled' ? theme.colors.neutral[200] :
-    theme.colors.neutral[100]
-  };
-  border: ${({ theme, variant = 'elevated' }) => 
-    variant === 'outlined' ? `1px solid ${theme.colors.neutral[300]}` : 'none'
-  };
-  ${({ variant = 'elevated' }) => 
-    variant === 'elevated' ? `
-      shadow-color: #000;
-      shadow-offset: 0px 2px;
-      shadow-opacity: 0.1;
-      shadow-radius: 4px;
-      elevation: 2;
-    ` : ''
-  }
-`; 
+export const Card: React.FC<CardProps> = ({
+  children,
+  variant = 'elevated',
+  padding = 'md',
+  style
+}) => {
+  const cardStyles = [
+    styles.card,
+    styles[`${variant}Card`],
+    styles[`${padding}Padding`],
+    style
+  ];
+
+  return (
+    <View style={cardStyles}>
+      {children}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: theme.borderRadius.md,
+  },
+  elevatedCard: {
+    backgroundColor: theme.colors.neutral[100],
+    shadowColor: theme.colors.neutral[900],
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  outlinedCard: {
+    backgroundColor: theme.colors.neutral[100],
+    borderWidth: 1,
+    borderColor: theme.colors.neutral[300],
+  },
+  filledCard: {
+    backgroundColor: theme.colors.neutral[200],
+  },
+  smPadding: {
+    padding: theme.spacing.sm,
+  },
+  mdPadding: {
+    padding: theme.spacing.md,
+  },
+  lgPadding: {
+    padding: theme.spacing.lg,
+  },
+}); 

@@ -7,8 +7,11 @@ export class GetCycleUseCase {
   async execute(): Promise<Cycle> {
     try {
       return await this.cycleRepository.getCurrentCycle();
-    } catch (error) {
-      throw new Error(`Erreur lors de la récupération du cycle: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Erreur lors de la récupération du cycle: ${error.message}`);
+      }
+      throw new Error('Une erreur inconnue est survenue lors de la récupération du cycle');
     }
   }
 } 

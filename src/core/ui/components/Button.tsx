@@ -1,42 +1,115 @@
-import styled from 'styled-components/native';
-import { Theme } from '../../../core/ui/theme/theme';
-import { StyledProps } from '../../../core/ui/theme/styled';
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { theme } from '../theme/theme';
 
 interface ButtonProps {
+  title: string;
+  onPress: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   disabled?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
-export const Button = styled.TouchableOpacity<StyledProps<ButtonProps>>`
-  padding: ${({ theme, size = 'md' }) => 
-    size === 'sm' ? theme.spacing.sm :
-    size === 'lg' ? theme.spacing.lg :
-    theme.spacing.md
-  }px;
-  border-radius: ${({ theme }) => theme.borderRadius.md}px;
-  background-color: ${({ theme, variant = 'primary', disabled }) => {
-    if (disabled) return theme.colors.neutral[300];
-    return variant === 'primary' ? theme.colors.primary :
-           variant === 'secondary' ? theme.colors.secondary :
-           'transparent';
-  }};
-  border: ${({ theme, variant = 'primary' }) => 
-    variant === 'outline' ? `2px solid ${theme.colors.primary}` : 'none'
-  };
-  width: ${({ fullWidth }) => fullWidth ? '100%' : 'auto'};
-  align-items: center;
-  justify-content: center;
-  opacity: ${({ disabled }) => disabled ? 0.7 : 1};
-`;
+export const Button: React.FC<ButtonProps> = ({
+  title,
+  onPress,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  disabled = false,
+  style,
+  textStyle
+}) => {
+  const buttonStyles = [
+    styles.button,
+    styles[`${variant}Button`],
+    styles[`${size}Button`],
+    fullWidth && styles.fullWidth,
+    disabled && styles.disabled,
+    style
+  ];
 
-export const ButtonText = styled.Text<StyledProps<{ variant?: 'primary' | 'secondary' | 'outline' }>>`
-  font-family: ${({ theme }) => theme.typography.fonts.Quicksand};
-  font-size: ${({ theme }) => theme.typography.fontSizes.md}px;
-  font-weight: ${({ theme }) => theme.typography.fontWeights.semiBold};
-  color: ${({ theme, variant = 'primary' }) => 
-    variant === 'outline' ? theme.colors.primary :
-    theme.colors.neutral[900]
-  };
-`; 
+  const textStyles = [
+    styles.text,
+    styles[`${variant}Text`],
+    styles[`${size}Text`],
+    disabled && styles.disabledText,
+    textStyle
+  ];
+
+  return (
+    <TouchableOpacity
+      style={buttonStyles}
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.7}
+    >
+      <Text style={textStyles}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: theme.borderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryButton: {
+    backgroundColor: theme.colors.primary,
+  },
+  secondaryButton: {
+    backgroundColor: theme.colors.secondary,
+  },
+  outlineButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+  },
+  smButton: {
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.sm,
+  },
+  mdButton: {
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+  },
+  lgButton: {
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  disabled: {
+    opacity: 0.7,
+  },
+  text: {
+    fontFamily: theme.typography.fonts.Quicksand,
+    fontWeight: theme.typography.fontWeights.semiBold,
+  },
+  primaryText: {
+    color: theme.colors.neutral[100],
+  },
+  secondaryText: {
+    color: theme.colors.neutral[900],
+  },
+  outlineText: {
+    color: theme.colors.primary,
+  },
+  smText: {
+    fontSize: theme.typography.fontSizes.sm,
+  },
+  mdText: {
+    fontSize: theme.typography.fontSizes.md,
+  },
+  lgText: {
+    fontSize: theme.typography.fontSizes.lg,
+  },
+  disabledText: {
+    opacity: 0.7,
+  },
+}); 

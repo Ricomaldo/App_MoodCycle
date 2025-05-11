@@ -22,8 +22,12 @@ export class CycleViewModel {
     
     try {
       this.cycle = await this.getCycleUseCase.execute();
-    } catch (error) {
-      this.error = error.message;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.error = error.message;
+      } else {
+        this.error = 'Une erreur inconnue est survenue lors du chargement du cycle';
+      }
     } finally {
       this.isLoading = false;
     }
@@ -39,7 +43,7 @@ export class CycleViewModel {
   }
 
   get cycleDuration() {
-    if (!this.cycle) return 0;
+    if (!this.cycle?.startDate || !this.cycle?.endDate) return 0;
     return Math.ceil(
       (this.cycle.endDate.getTime() - this.cycle.startDate.getTime()) / (1000 * 60 * 60 * 24)
     );

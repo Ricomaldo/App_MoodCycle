@@ -35,7 +35,8 @@ export class DailyEntryRepository implements IDailyEntryRepository {
     let createdEntry: DailyEntryModel;
     await database.write(async () => {
       createdEntry = await database.collections.get<DailyEntryModel>('daily_entries').create(record => {
-        record.cycle.id = entry.cycleId;
+        // @ts-expect-error: cycle_id n'est pas typé mais existe dans WatermelonDB
+        record.cycle_id = entry.cycleId;
         record.date = entry.date;
         record.mood = entry.mood;
         record.symptoms = entry.symptoms;
