@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MoodState {
   currentMood: string | null;
-  moodHistory: Array<{
+  moodHistory: {
     date: string;
     mood: string;
-  }>;
+  }[];
 }
 
 const initialState: MoodState = {
@@ -24,11 +24,11 @@ const moodSlice = createSlice({
         mood: action.payload,
       });
     },
-    clearCurrentMood: (state) => {
+    clearCurrentMood: state => {
       state.currentMood = null;
     },
   },
 });
 
 export const { setCurrentMood, clearCurrentMood } = moodSlice.actions;
-export default moodSlice.reducer; 
+export default moodSlice.reducer;

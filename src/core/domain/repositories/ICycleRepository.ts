@@ -11,4 +11,4 @@ export interface ICycleRepository {
   getNextCycle(): Promise<Cycle | null>;
   getCyclePredictions(cycleId: string): Promise<CyclePredictions>;
   getCycleStatistics(cycleId: string): Promise<CycleStatistics>;
-} 
+}

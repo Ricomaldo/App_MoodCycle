@@ -81,4 +81,4 @@ export const {
   updatePreferences,
 } = authSlice.actions;
 
-export default authSlice.reducer; 
+export default authSlice.reducer;

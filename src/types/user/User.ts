@@ -106,4 +106,4 @@ export interface Goal {
   targetDate?: Date;
   status: 'active' | 'completed' | 'abandoned';
   progress: number;
-} 
+}

@@ -10,7 +10,7 @@ interface CycleScreenProps {
 export const CycleScreen: React.FC<CycleScreenProps> = observer(({ viewModel }) => {
   useEffect(() => {
     viewModel.loadCycle();
-  }, []);
+  }, [viewModel]);
 
   if (viewModel.isLoading) {
     return (
@@ -33,9 +33,7 @@ export const CycleScreen: React.FC<CycleScreenProps> = observer(({ viewModel }) 
       {viewModel.hasActiveCycle ? (
         <>
           <Text style={styles.title}>Phase actuelle : {viewModel.currentPhase}</Text>
-          <Text style={styles.subtitle}>
-            Durée du cycle : {viewModel.cycleDuration} jours
-          </Text>
+          <Text style={styles.subtitle}>Durée du cycle : {viewModel.cycleDuration} jours</Text>
         </>
       ) : (
         <Text style={styles.title}>Aucun cycle en cours</Text>
@@ -46,22 +44,22 @@ export const CycleScreen: React.FC<CycleScreenProps> = observer(({ viewModel }) 
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+  },
+  error: {
+    color: 'red',
+    fontSize: 16,
+  },
+  subtitle: {
+    color: '#666',
+    fontSize: 18,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-  },
-  error: {
-    color: 'red',
-    fontSize: 16,
-  },
-}); 
+});

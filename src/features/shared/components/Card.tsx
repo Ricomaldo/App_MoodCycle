@@ -8,17 +8,14 @@ interface CardProps {
 }
 
 export const Card = ({ children, style }: CardProps) => {
-  return (
-    <View style={[styles.card, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[styles.card, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.neutral[100],
     borderRadius: 12,
+    elevation: 3,
     padding: 16,
     shadowColor: theme.colors.neutral[900],
     shadowOffset: {
@@ -27,6 +24,5 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
-}); 
+});

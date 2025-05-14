@@ -8,4 +8,4 @@ export default class Mood extends Model {
   @field('note') note?: string;
   @date('created_at') createdAt!: Date;
   @date('updated_at') updatedAt!: Date;
-} 
+}

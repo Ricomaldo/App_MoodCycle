@@ -1,6 +1,6 @@
 export type CyclePhase = 'menstruation' | 'follicular' | 'ovulation' | 'luteal';
 
-export type MoodType = 
+export type MoodType =
   | 'happy'
   | 'sad'
   | 'energetic'
@@ -80,14 +80,14 @@ export interface CycleStatistics {
     ovulation: number;
     luteal: number;
   };
-  commonSymptoms: Array<{
+  commonSymptoms: {
     type: string;
     frequency: number; // 0-1
     averageIntensity: number; // 1-5
-  }>;
-  commonMoods: Array<{
+  }[];
+  commonMoods: {
     type: MoodType;
     frequency: number; // 0-1
-  }>;
+  }[];
   lastUpdated: Date;
-} 
+}

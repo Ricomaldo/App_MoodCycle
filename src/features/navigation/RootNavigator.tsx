@@ -22,13 +22,9 @@ export const RootNavigator: React.FC = () => {
           },
         }}
       >
-        <Stack.Screen
-          name="Main"
-          component={MainTabNavigator}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
         {/* Auth stack sera ajouté plus tard */}
       </Stack.Navigator>
     </NavigationContainer>
   );
-}; 
+};

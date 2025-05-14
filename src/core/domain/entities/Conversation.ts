@@ -20,4 +20,4 @@ export interface Conversation {
     userMood?: number;
     userSymptoms?: string[];
   };
-} 
+}

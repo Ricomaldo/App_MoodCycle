@@ -18,4 +18,4 @@ export interface MessageInput {
   content: string;
   isUser: boolean;
   metadata?: Message['metadata'];
-} 
+}

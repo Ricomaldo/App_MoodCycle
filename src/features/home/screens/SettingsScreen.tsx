@@ -12,14 +12,14 @@ export const SettingsScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: theme.colors.neutral[100],
     flex: 1,
     padding: 16,
-    backgroundColor: theme.colors.neutral[100],
   },
   title: {
+    color: theme.colors.neutral[900],
     fontFamily: theme.typography.fonts.Quicksand,
     fontSize: theme.typography.fontSizes['2xl'],
     fontWeight: 'bold',
-    color: theme.colors.neutral[900],
   },
-}); 
+});

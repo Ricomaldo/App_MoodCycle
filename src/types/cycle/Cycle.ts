@@ -40,7 +40,7 @@ export interface MoodEntry {
   notes?: string;
 }
 
-export type MoodType = 
+export type MoodType =
   | 'happy'
   | 'sad'
   | 'energetic'
@@ -57,7 +57,7 @@ export interface SymptomEntry {
   notes?: string;
 }
 
-export type SymptomType = 
+export type SymptomType =
   | 'cramps'
   | 'headache'
   | 'backache'
@@ -96,11 +96,11 @@ export interface ContraceptionInfo {
   notes?: string;
 }
 
-export type ContraceptionType = 
+export type ContraceptionType =
   | 'pill'
   | 'iud'
   | 'implant'
   | 'patch'
   | 'ring'
   | 'injection'
-  | 'other'; 
+  | 'other';

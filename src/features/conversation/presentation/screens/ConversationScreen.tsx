@@ -20,7 +20,7 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = observer(({
 
   useEffect(() => {
     viewModel.loadConversation();
-  }, []);
+  }, [viewModel]);
 
   const handleSend = async () => {
     if (message.trim()) {
@@ -41,21 +41,21 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = observer(({
     <View style={styles.container}>
       <FlatList
         data={viewModel.messages}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <View style={[
-            styles.messageContainer,
-            item.isUser ? styles.userMessage : styles.meluneMessage
-          ]}>
+          <View
+            style={[
+              styles.messageContainer,
+              item.isUser ? styles.userMessage : styles.meluneMessage,
+            ]}
+          >
             <Text style={styles.messageText}>{item.content}</Text>
-            <Text style={styles.timestamp}>
-              {new Date(item.timestamp).toLocaleTimeString()}
-            </Text>
+            <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleTimeString()}</Text>
           </View>
         )}
         inverted
       />
-      
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -82,57 +82,57 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = observer(({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#f5f5f5',
+    flex: 1,
   },
-  messageContainer: {
+  input: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 20,
+    flex: 1,
+    marginRight: 10,
+    maxHeight: 100,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  inputContainer: {
+    backgroundColor: '#fff',
+    borderTopColor: '#E5E5EA',
+    borderTopWidth: 1,
+    flexDirection: 'row',
     padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    maxWidth: '80%',
-  },
-  userMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#007AFF',
   },
   meluneMessage: {
     alignSelf: 'flex-start',
     backgroundColor: '#E5E5EA',
   },
+  messageContainer: {
+    borderRadius: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    maxWidth: '80%',
+    padding: 10,
+  },
   messageText: {
     color: '#fff',
     fontSize: 16,
   },
-  timestamp: {
-    fontSize: 12,
-    color: '#rgba(255,255,255,0.7)',
-    marginTop: 5,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginRight: 10,
-    maxHeight: 100,
-  },
   sendButton: {
     backgroundColor: '#007AFF',
     borderRadius: 20,
-    paddingHorizontal: 20,
     justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   sendButtonText: {
     color: '#fff',
     fontSize: 16,
   },
-}); 
+  timestamp: {
+    color: '#rgba(255,255,255,0.7)',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  userMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#007AFF',
+  },
+});

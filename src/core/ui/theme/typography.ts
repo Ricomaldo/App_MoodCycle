@@ -12,20 +12,20 @@ export const typography = {
     '2xl': 24,
     '3xl': 30,
     '4xl': 36,
-    '5xl': 48
+    '5xl': 48,
   },
   lineHeights: {
     tight: 1.2,
     normal: 1.5,
-    relaxed: 1.75
+    relaxed: 1.75,
   },
   letterSpacing: {
     tighter: -0.8,
     tight: -0.4,
     normal: 0,
     wide: 0.4,
-    wider: 0.8
-  }
+    wider: 0.8,
+  },
 } as const;
 
-export type Typography = typeof typography; 
+export type Typography = typeof typography;

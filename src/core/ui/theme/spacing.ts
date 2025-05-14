@@ -6,7 +6,7 @@ export const spacing = {
   xl: 32,
   '2xl': 48,
   '3xl': 64,
-  '4xl': 96
+  '4xl': 96,
 } as const;
 
-export type Spacing = typeof spacing; 
+export type Spacing = typeof spacing;

@@ -1,7 +1,6 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { ClaudeConfig, ClaudeContext, ClaudeResponse, ClaudeError } from './types';
 import { getConfig } from './config';
-import { Message } from '../../domain/entities/conversation/Message';
 
 export class ClaudeService {
   private client: AxiosInstance;
@@ -77,10 +76,7 @@ export class ClaudeService {
     };
   }
 
-  async sendMessage(
-    message: string,
-    context: ClaudeContext
-  ): Promise<ClaudeResponse> {
+  async sendMessage(message: string, context: ClaudeContext): Promise<ClaudeResponse> {
     const prompt = this.buildPrompt(message, context);
 
     return this.retryWithBackoff(async () => {
@@ -100,12 +96,12 @@ export class ClaudeService {
   }
 
   // Méthode pour le mode hors-ligne
-  async getOfflineResponse(message: string): Promise<ClaudeResponse> {
+  async getOfflineResponse(_message: string): Promise<ClaudeResponse> {
     return {
-      content: "Je suis désolé, je ne peux pas répondre en mode hors-ligne pour le moment.",
+      content: 'Je suis désolé, je ne peux pas répondre en mode hors-ligne pour le moment.',
       metadata: {
         model: 'offline',
       },
     };
   }
-} 
+}

@@ -1,6 +1,5 @@
-import { Model } from '@nozbe/watermelondb';
-import { field, date, children, relation } from '@nozbe/watermelondb/decorators';
-import { Database, Q, Query } from '@nozbe/watermelondb';
+import { Model, Database, Q, Query } from '@nozbe/watermelondb';
+import { field, children, relation } from '@nozbe/watermelondb/decorators';
 import { ConversationRepository } from '../../domain/repositories/ConversationRepository';
 import { Conversation, ConversationInput } from '../../domain/entities/conversation/Conversation';
 import { Message, MessageInput } from '../../domain/entities/conversation/Message';
@@ -105,10 +104,7 @@ export class WatermelonConversationRepository implements ConversationRepository 
     return conversations.length > 0 ? this.getConversation(conversations[0].id) : null;
   }
 
-  async updateConversationContext(
-    id: string,
-    context: Conversation['context']
-  ): Promise<void> {
+  async updateConversationContext(id: string, context: Conversation['context']): Promise<void> {
     await this.database.write(async () => {
       const conversation = await this.database.collections
         .get<ConversationModel>('conversations')
@@ -119,10 +115,7 @@ export class WatermelonConversationRepository implements ConversationRepository 
     });
   }
 
-  async addMessage(
-    conversationId: string,
-    message: MessageInput
-  ): Promise<Message> {
+  async addMessage(conversationId: string, message: MessageInput): Promise<Message> {
     const now = Date.now();
     const newMessage = await this.database.write(async () => {
       const conversation = await this.database.collections
@@ -173,11 +166,7 @@ export class WatermelonConversationRepository implements ConversationRepository 
   async getLastMessage(conversationId: string): Promise<Message | null> {
     const messages = await this.database.collections
       .get<MessageModel>('messages')
-      .query(
-        Q.where('conversation_id', conversationId),
-        Q.sortBy('timestamp', Q.desc),
-        Q.take(1)
-      )
+      .query(Q.where('conversation_id', conversationId), Q.sortBy('timestamp', Q.desc), Q.take(1))
       .fetch();
 
     if (messages.length === 0) return null;
@@ -210,4 +199,4 @@ export class WatermelonConversationRepository implements ConversationRepository 
       await conversation.destroyPermanently();
     });
   }
-} 
+}

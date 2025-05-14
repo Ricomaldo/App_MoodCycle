@@ -12,4 +12,4 @@ export const getConfig = (): ClaudeConfig => {
     throw new Error('Claude API key is not configured');
   }
   return defaultConfig;
-}; 
+};

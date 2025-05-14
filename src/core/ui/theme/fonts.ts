@@ -3,12 +3,12 @@ import { Platform } from 'react-native';
 export const fonts = {
   Quintessential: Platform.select({
     ios: 'Quintessential',
-    android: 'Quintessential-Regular'
+    android: 'Quintessential-Regular',
   }),
   Quicksand: Platform.select({
     ios: 'Quicksand',
-    android: 'Quicksand-Regular'
-  })
+    android: 'Quicksand-Regular',
+  }),
 } as const;
 
 export const fontWeights = {
@@ -16,5 +16,5 @@ export const fontWeights = {
   regular: '400',
   medium: '500',
   semiBold: '600',
-  bold: '700'
-} as const; 
+  bold: '700',
+} as const;

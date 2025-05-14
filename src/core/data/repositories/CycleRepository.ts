@@ -1,6 +1,12 @@
 import { database } from '../models';
 import { ICycleRepository } from '../../domain/repositories/ICycleRepository';
-import { Cycle, CyclePredictions, CycleStatistics, DailyEntry, MoodType, Symptom } from '../../domain/entities/Cycle';
+import {
+  Cycle,
+  CyclePredictions,
+  CycleStatistics,
+  MoodType,
+  Symptom,
+} from '../../domain/entities/Cycle';
 import CycleModel from '../models/CycleModel';
 import DailyEntryModel from '../models/DailyEntryModel';
 import { Q } from '@nozbe/watermelondb';
@@ -16,10 +22,8 @@ const calculateStandardDeviation = (values: number[]): number => {
 export class CycleRepository implements ICycleRepository {
   async getCurrentCycle(): Promise<Cycle> {
     const cycles = await database.collections.get<CycleModel>('cycles');
-    const currentCycle = await cycles.query(
-      Q.where('end_date', null)
-    ).fetch();
-    
+    const currentCycle = await cycles.query(Q.where('end_date', null)).fetch();
+
     if (currentCycle.length === 0) {
       throw new Error('Aucun cycle en cours');
     }
@@ -35,11 +39,13 @@ export class CycleRepository implements ICycleRepository {
 
   async getCyclesByDateRange(startDate: Date, endDate: Date): Promise<Cycle[]> {
     const cycles = await database.collections.get<CycleModel>('cycles');
-    const cyclesInRange = await cycles.query(
-      Q.where('start_date', Q.gte(startDate.getTime())),
-      Q.where('end_date', Q.lte(endDate.getTime()))
-    ).fetch();
-    
+    const cyclesInRange = await cycles
+      .query(
+        Q.where('start_date', Q.gte(startDate.getTime())),
+        Q.where('end_date', Q.lte(endDate.getTime()))
+      )
+      .fetch();
+
     return cyclesInRange.map(this.mapToEntity);
   }
 
@@ -79,7 +85,7 @@ export class CycleRepository implements ICycleRepository {
     await database.write(async () => {
       const cycles = await database.collections.get<CycleModel>('cycles');
       const cycleToUpdate = await cycles.find(cycle.id);
-      
+
       await cycleToUpdate.update(record => {
         record.userId = cycle.userId;
         record.startDate = cycle.startDate;
@@ -92,9 +98,7 @@ export class CycleRepository implements ICycleRepository {
       // Mettre à jour les entrées quotidiennes
       if (cycle.entries && cycle.entries.length > 0) {
         const entries = await database.collections.get<DailyEntryModel>('daily_entries');
-        const existingEntries = await entries.query(
-          Q.where('cycle_id', cycle.id)
-        ).fetch();
+        const existingEntries = await entries.query(Q.where('cycle_id', cycle.id)).fetch();
 
         // Supprimer les entrées qui ne sont plus présentes
         for (const existingEntry of existingEntries) {
@@ -146,10 +150,8 @@ export class CycleRepository implements ICycleRepository {
 
       // Supprimer d'abord les entrées associées
       const entries = await database.collections.get<DailyEntryModel>('daily_entries');
-      const cycleEntries = await entries.query(
-        Q.where('cycle_id', id)
-      ).fetch();
-      
+      const cycleEntries = await entries.query(Q.where('cycle_id', id)).fetch();
+
       for (const entry of cycleEntries) {
         await entry.destroyPermanently();
       }
@@ -161,21 +163,19 @@ export class CycleRepository implements ICycleRepository {
 
   async getLastCycle(): Promise<Cycle | null> {
     const cycles = await database.collections.get<CycleModel>('cycles');
-    const lastCycle = await cycles.query(
-      Q.where('end_date', Q.notEq(null)),
-      Q.sortBy('end_date', Q.desc)
-    ).fetch();
-    
+    const lastCycle = await cycles
+      .query(Q.where('end_date', Q.notEq(null)), Q.sortBy('end_date', Q.desc))
+      .fetch();
+
     return lastCycle.length > 0 ? this.mapToEntity(lastCycle[0]) : null;
   }
 
   async getNextCycle(): Promise<Cycle | null> {
     const cycles = await database.collections.get<CycleModel>('cycles');
-    const nextCycle = await cycles.query(
-      Q.where('start_date', Q.gt(new Date().getTime())),
-      Q.sortBy('start_date', Q.asc)
-    ).fetch();
-    
+    const nextCycle = await cycles
+      .query(Q.where('start_date', Q.gt(new Date().getTime())), Q.sortBy('start_date', Q.asc))
+      .fetch();
+
     return nextCycle.length > 0 ? this.mapToEntity(nextCycle[0]) : null;
   }
 
@@ -187,24 +187,30 @@ export class CycleRepository implements ICycleRepository {
     );
 
     // Calcul basique des prédictions basé sur les cycles précédents
-    const averageCycleLength = cycles.reduce((acc, c) => {
-      if (c.endDate) {
-        return acc + (c.endDate.getTime() - c.startDate.getTime()) / (24 * 60 * 60 * 1000);
-      }
-      return acc;
-    }, 0) / cycles.length;
+    const averageCycleLength =
+      cycles.reduce((acc, c) => {
+        if (c.endDate) {
+          return acc + (c.endDate.getTime() - c.startDate.getTime()) / (24 * 60 * 60 * 1000);
+        }
+        return acc;
+      }, 0) / cycles.length;
 
-    const averagePeriodLength = cycles.reduce((acc, c) => {
-      const periodEntries = c.entries.filter(e => e.flow && e.flow > 0);
-      if (periodEntries.length > 0) {
-        return acc + periodEntries.length;
-      }
-      return acc;
-    }, 0) / cycles.length;
+    const averagePeriodLength =
+      cycles.reduce((acc, c) => {
+        const periodEntries = c.entries.filter(e => e.flow && e.flow > 0);
+        if (periodEntries.length > 0) {
+          return acc + periodEntries.length;
+        }
+        return acc;
+      }, 0) / cycles.length;
 
-    const nextCycleStart = new Date(cycle.startDate.getTime() + averageCycleLength * 24 * 60 * 60 * 1000);
+    const nextCycleStart = new Date(
+      cycle.startDate.getTime() + averageCycleLength * 24 * 60 * 60 * 1000
+    );
     const nextPeriodStart = nextCycleStart;
-    const nextPeriodEnd = new Date(nextPeriodStart.getTime() + averagePeriodLength * 24 * 60 * 60 * 1000);
+    const nextPeriodEnd = new Date(
+      nextPeriodStart.getTime() + averagePeriodLength * 24 * 60 * 60 * 1000
+    );
     const nextOvulation = new Date(nextPeriodStart.getTime() + 14 * 24 * 60 * 60 * 1000);
 
     return {
@@ -213,10 +219,10 @@ export class CycleRepository implements ICycleRepository {
       nextOvulation,
       fertileWindow: {
         start: new Date(nextOvulation.getTime() - 5 * 24 * 60 * 60 * 1000),
-        end: new Date(nextOvulation.getTime() + 1 * 24 * 60 * 60 * 1000)
+        end: new Date(nextOvulation.getTime() + 1 * 24 * 60 * 60 * 1000),
       },
       nextCycleStart,
-      confidence: 0.8 // À améliorer avec plus de données
+      confidence: 0.8, // À améliorer avec plus de données
     };
   }
 
@@ -228,26 +234,28 @@ export class CycleRepository implements ICycleRepository {
     );
 
     // Calcul des statistiques basiques
-    const averageCycleLength = cycles.reduce((acc, c) => {
-      if (c.endDate) {
-        return acc + (c.endDate.getTime() - c.startDate.getTime()) / (24 * 60 * 60 * 1000);
-      }
-      return acc;
-    }, 0) / cycles.length;
+    const averageCycleLength =
+      cycles.reduce((acc, c) => {
+        if (c.endDate) {
+          return acc + (c.endDate.getTime() - c.startDate.getTime()) / (24 * 60 * 60 * 1000);
+        }
+        return acc;
+      }, 0) / cycles.length;
 
-    const averagePeriodLength = cycles.reduce((acc, c) => {
-      const periodEntries = c.entries.filter(e => e.flow && e.flow > 0);
-      if (periodEntries.length > 0) {
-        return acc + periodEntries.length;
-      }
-      return acc;
-    }, 0) / cycles.length;
+    const averagePeriodLength =
+      cycles.reduce((acc, c) => {
+        const periodEntries = c.entries.filter(e => e.flow && e.flow > 0);
+        if (periodEntries.length > 0) {
+          return acc + periodEntries.length;
+        }
+        return acc;
+      }, 0) / cycles.length;
 
     // Calcul de la régularité (écart-type des longueurs de cycle)
     const cycleLengths = cycles
       .filter(c => c.endDate)
       .map(c => (c.endDate!.getTime() - c.startDate.getTime()) / (24 * 60 * 60 * 1000));
-    const cycleRegularity = 1 - (calculateStandardDeviation(cycleLengths) / averageCycleLength);
+    const cycleRegularity = 1 - calculateStandardDeviation(cycleLengths) / averageCycleLength;
 
     // Analyse des symptômes et humeurs
     const symptoms = cycles.flatMap(c => c.entries.flatMap(e => e.symptoms || []));
@@ -264,18 +272,18 @@ export class CycleRepository implements ICycleRepository {
         menstruation: averagePeriodLength,
         follicular: 14,
         ovulation: 1,
-        luteal: 14
+        luteal: 14,
       },
       commonSymptoms: Object.entries(symptomFrequency).map(([type, frequency]) => ({
         type,
         frequency,
-        averageIntensity: this.calculateAverageIntensity(symptoms, type)
+        averageIntensity: this.calculateAverageIntensity(symptoms, type),
       })),
       commonMoods: Object.entries(moodFrequency).map(([type, frequency]) => ({
         type: type as MoodType,
-        frequency
+        frequency,
       })),
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
   }
 
@@ -315,12 +323,12 @@ export class CycleRepository implements ICycleRepository {
         temperature: entry.temperature,
         cervicalMucus: entry.cervicalMucus,
         intercourse: entry.intercourse,
-        contraception: entry.contraception
+        contraception: entry.contraception,
       })),
       averageLength: model.averageLength,
       isCurrent: model.isCurrent,
       createdAt: model.createdAt,
-      updatedAt: model.updatedAt
+      updatedAt: model.updatedAt,
     };
   }
-} 
+}

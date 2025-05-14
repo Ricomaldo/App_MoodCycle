@@ -7,4 +7,4 @@ export interface IDailyEntryRepository {
   createEntry(entry: Omit<DailyEntry, 'id'>): Promise<DailyEntry>;
   updateEntry(entry: DailyEntry): Promise<void>;
   deleteEntry(id: string): Promise<void>;
-} 
+}

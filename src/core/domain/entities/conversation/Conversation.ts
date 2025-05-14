@@ -15,4 +15,4 @@ export interface Conversation {
 
 export interface ConversationInput {
   context?: Conversation['context'];
-} 
+}

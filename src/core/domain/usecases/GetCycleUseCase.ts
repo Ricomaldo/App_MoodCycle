@@ -14,4 +14,4 @@ export class GetCycleUseCase {
       throw new Error('Une erreur inconnue est survenue lors de la récupération du cycle');
     }
   }
-} 
+}

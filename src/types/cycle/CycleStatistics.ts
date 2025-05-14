@@ -10,4 +10,4 @@ export interface CycleStatistics {
   predictionConfidence: number;
   phaseDistribution: PhaseDistribution;
   cycleRegularity: number; // score
-} 
+}

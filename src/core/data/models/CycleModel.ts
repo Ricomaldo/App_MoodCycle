@@ -1,6 +1,6 @@
 import { Model } from '@nozbe/watermelondb';
 import { field, date, children } from '@nozbe/watermelondb/decorators';
-import { Cycle, CyclePhase } from '@core/domain/entities/Cycle';
+import type { CyclePhase } from '@core/domain/entities/Cycle';
 import DailyEntryModel from './DailyEntryModel';
 
 export default class CycleModel extends Model {
@@ -16,4 +16,4 @@ export default class CycleModel extends Model {
   @date('updated_at') updatedAt!: Date;
 
   @children('daily_entries') entries!: DailyEntryModel[];
-} 
+}

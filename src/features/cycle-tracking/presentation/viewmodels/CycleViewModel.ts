@@ -19,7 +19,7 @@ export class CycleViewModel {
   async loadCycle() {
     this.isLoading = true;
     this.error = null;
-    
+
     try {
       this.cycle = await this.getCycleUseCase.execute();
     } catch (error: unknown) {
@@ -48,4 +48,4 @@ export class CycleViewModel {
       (this.cycle.endDate.getTime() - this.cycle.startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
   }
-} 
+}

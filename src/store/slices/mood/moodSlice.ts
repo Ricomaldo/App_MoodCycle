@@ -25,7 +25,7 @@ const moodSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    resetMood: (state) => {
+    resetMood: state => {
       state.currentMood = null;
       state.error = null;
     },
@@ -33,4 +33,4 @@ const moodSlice = createSlice({
 });
 
 export const { setCurrentMood, setLoading, setError, resetMood } = moodSlice.actions;
-export default moodSlice.reducer; 
+export default moodSlice.reducer;

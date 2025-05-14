@@ -27,4 +27,4 @@ export interface ClaudeError {
   code: string;
   message: string;
   details?: unknown;
-} 
+}

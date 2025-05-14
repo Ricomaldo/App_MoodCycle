@@ -29,4 +29,4 @@ export interface User {
   profile: UserProfile;
   preferences: UserPreferences;
   engagement: UserEngagement;
-} 
+}

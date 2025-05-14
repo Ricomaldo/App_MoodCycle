@@ -6,15 +6,17 @@ import { Text } from '../../../core/ui/components/Text';
 export const ConversationScreen: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Text variant="lg" weight="bold">Conversation</Text>
+      <Text variant="lg" weight="bold">
+        Conversation
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: theme.colors.neutral[100],
     flex: 1,
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.neutral[100],
   },
-}); 
+});

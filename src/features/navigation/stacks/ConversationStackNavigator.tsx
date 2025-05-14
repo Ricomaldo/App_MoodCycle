@@ -33,4 +33,4 @@ export const ConversationStackNavigator: React.FC = () => {
       />
     </Stack.Navigator>
   );
-}; 
+};

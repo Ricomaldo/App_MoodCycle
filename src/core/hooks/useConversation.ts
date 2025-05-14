@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { SendMessageUseCase } from '../domain/usecases/conversation/SendMessageUseCase';
 import { GetConversationHistoryUseCase } from '../domain/usecases/conversation/GetConversationHistoryUseCase';
 import { Conversation } from '../domain/entities/conversation/Conversation';
-import { Message } from '../domain/entities/conversation/Message';
 import { ClaudeError } from '../services/claude/types';
 
 interface UseConversationProps {
@@ -74,4 +73,4 @@ export const useConversation = ({
     sendMessage,
     refreshConversation,
   };
-}; 
+};

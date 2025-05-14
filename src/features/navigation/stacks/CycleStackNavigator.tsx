@@ -22,11 +22,7 @@ export const CycleStackNavigator: React.FC = () => {
         },
       }}
     >
-      <Stack.Screen
-        name="Cycle"
-        component={CycleScreen}
-        options={{ title: 'Cycle' }}
-      />
+      <Stack.Screen name="Cycle" component={CycleScreen} options={{ title: 'Cycle' }} />
       <Stack.Screen
         name="CycleHistory"
         component={CycleHistoryScreen}
@@ -39,4 +35,4 @@ export const CycleStackNavigator: React.FC = () => {
       />
     </Stack.Navigator>
   );
-}; 
+};

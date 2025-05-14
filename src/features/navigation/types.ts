@@ -33,4 +33,4 @@ export type WisdomStackParamList = {
   WisdomScreen: undefined;
   Article: { id: string };
   Category: { id: string };
-}; 
+};

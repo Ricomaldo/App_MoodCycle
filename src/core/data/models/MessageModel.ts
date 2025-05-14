@@ -12,4 +12,4 @@ export default class MessageModel extends Model {
     context?: string;
   };
   @date('timestamp') timestamp!: Date;
-} 
+}

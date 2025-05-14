@@ -1,6 +1,6 @@
 import { Model } from '@nozbe/watermelondb';
 import { field, date, json, children } from '@nozbe/watermelondb/decorators';
-import { User, UserProfile, UserPreferences, UserEngagement } from '../../types/user/User';
+import type { UserProfile, UserPreferences, UserEngagement } from '../../types/user/User';
 import CycleModel from './CycleModel';
 
 export default class UserModel extends Model {
@@ -15,4 +15,4 @@ export default class UserModel extends Model {
   @json('engagement', json => json || {}) engagement!: UserEngagement;
 
   @children('cycles') cycles!: CycleModel[];
-} 
+}

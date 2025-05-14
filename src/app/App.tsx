@@ -15,7 +15,7 @@ const queryClient = new QueryClient();
 function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text>Écran d'accueil</Text>
+      <Text>Écran d&apos;accueil</Text>
     </View>
   );
 }
@@ -41,9 +41,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
   },
 });

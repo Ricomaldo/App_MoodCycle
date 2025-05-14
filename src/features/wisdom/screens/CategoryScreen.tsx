@@ -6,15 +6,17 @@ import { Text } from '../../../core/ui/components/Text';
 export const CategoryScreen: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Text variant="lg" weight="bold">Catégorie</Text>
+      <Text variant="lg" weight="bold">
+        Catégorie
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: theme.colors.neutral[100],
     flex: 1,
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.neutral[100],
   },
-}); 
+});

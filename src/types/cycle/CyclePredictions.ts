@@ -12,4 +12,4 @@ export interface CyclePredictions {
     mostLikely: Date;
     latest: Date;
   };
-} 
+}

@@ -14,7 +14,7 @@ export const theme: Theme = {
   colors,
   typography,
   spacing,
-  borderRadius
+  borderRadius,
 } as const;
 
-export type { Colors, Typography, Spacing, BorderRadius }; 
+export type { Colors, Typography, Spacing, BorderRadius };

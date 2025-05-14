@@ -40,4 +40,4 @@ export enum AuthActionTypes {
   REGISTER_FAILURE = 'auth/registerFailure',
   UPDATE_USER = 'auth/updateUser',
   UPDATE_PREFERENCES = 'auth/updatePreferences',
-} 
+}

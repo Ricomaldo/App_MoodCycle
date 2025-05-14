@@ -7,13 +7,13 @@ export interface ConversationRepository {
   getConversation(id: string): Promise<Conversation | null>;
   getCurrentConversation(): Promise<Conversation | null>;
   updateConversationContext(id: string, context: Conversation['context']): Promise<void>;
-  
+
   // Messages
   addMessage(conversationId: string, message: MessageInput): Promise<Message>;
   getMessages(conversationId: string): Promise<Message[]>;
   getLastMessage(conversationId: string): Promise<Message | null>;
-  
+
   // Utilitaires
   clearConversation(id: string): Promise<void>;
   deleteConversation(id: string): Promise<void>;
-} 
+}

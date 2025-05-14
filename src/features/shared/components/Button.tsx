@@ -19,25 +19,37 @@ export const Button = ({
   textStyle,
   disabled = false,
 }: ButtonProps) => {
+  const getVariantStyle = () => {
+    switch (variant) {
+      case 'outline':
+        return styles.outline;
+      case 'secondary':
+        return styles.secondary;
+      case 'primary':
+      default:
+        return styles.primary;
+    }
+  };
+
+  const getTextStyle = () => {
+    switch (variant) {
+      case 'outline':
+        return styles.outlineText;
+      case 'secondary':
+        return styles.secondaryText;
+      case 'primary':
+      default:
+        return styles.primaryText;
+    }
+  };
+
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        styles[variant],
-        disabled && styles.disabled,
-        style,
-      ]}
+      style={[styles.button, getVariantStyle(), disabled && styles.disabled, style]}
       onPress={onPress}
       disabled={disabled}
     >
-      <Text
-        style={[
-          styles.text,
-          styles[`${variant}Text`],
-          disabled && styles.disabledText,
-          textStyle,
-        ]}
-      >
+      <Text style={[styles.text, getTextStyle(), disabled && styles.disabledText, textStyle]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -46,40 +58,40 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   button: {
-    padding: 12,
-    borderRadius: 8,
     alignItems: 'center',
+    borderRadius: 8,
     justifyContent: 'center',
+    padding: 12,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  disabledText: {
+    color: theme.colors.neutral[500],
+  },
+  outline: {
+    backgroundColor: 'transparent',
+    borderColor: theme.colors.primary,
+    borderWidth: 1,
+  },
+  outlineText: {
+    color: theme.colors.primary,
   },
   primary: {
     backgroundColor: theme.colors.primary,
   },
+  primaryText: {
+    color: theme.colors.neutral[100],
+  },
   secondary: {
     backgroundColor: theme.colors.neutral[200],
   },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-  disabled: {
-    opacity: 0.5,
+  secondaryText: {
+    color: theme.colors.neutral[900],
   },
   text: {
     fontFamily: theme.typography.fonts.Quicksand,
     fontSize: theme.typography.fontSizes.md,
     fontWeight: '600',
   },
-  primaryText: {
-    color: theme.colors.neutral[100],
-  },
-  secondaryText: {
-    color: theme.colors.neutral[900],
-  },
-  outlineText: {
-    color: theme.colors.primary,
-  },
-  disabledText: {
-    color: theme.colors.neutral[500],
-  },
-}); 
+});

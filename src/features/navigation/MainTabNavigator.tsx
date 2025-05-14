@@ -28,9 +28,7 @@ export const MainTabNavigator = () => {
         component={HomeStackNavigator}
         options={{
           tabBarLabel: 'Accueil',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="home" size={size} color={color} />,
         }}
       />
       <Tab.Screen
@@ -38,9 +36,7 @@ export const MainTabNavigator = () => {
         component={CycleStackNavigator}
         options={{
           tabBarLabel: 'Cycle',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="calendar-clock" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="calendar-clock" size={size} color={color} />,
         }}
       />
       <Tab.Screen
@@ -48,9 +44,7 @@ export const MainTabNavigator = () => {
         component={ConversationStackNavigator}
         options={{
           tabBarLabel: 'Chat',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="chat" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="chat" size={size} color={color} />,
         }}
       />
       <Tab.Screen
@@ -65,4 +59,4 @@ export const MainTabNavigator = () => {
       />
     </Tab.Navigator>
   );
-}; 
+};

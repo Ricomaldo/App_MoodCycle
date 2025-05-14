@@ -23,21 +23,9 @@ export const WisdomStackNavigator: React.FC = () => {
         },
       }}
     >
-      <Stack.Screen
-        name="WisdomScreen"
-        component={WisdomScreen}
-        options={{ title: 'Sagesse' }}
-      />
-      <Stack.Screen
-        name="Article"
-        component={ArticleScreen}
-        options={{ title: 'Article' }}
-      />
-      <Stack.Screen
-        name="Category"
-        component={CategoryScreen}
-        options={{ title: 'Catégorie' }}
-      />
+      <Stack.Screen name="WisdomScreen" component={WisdomScreen} options={{ title: 'Sagesse' }} />
+      <Stack.Screen name="Article" component={ArticleScreen} options={{ title: 'Article' }} />
+      <Stack.Screen name="Category" component={CategoryScreen} options={{ title: 'Catégorie' }} />
     </Stack.Navigator>
   );
-}; 
+};

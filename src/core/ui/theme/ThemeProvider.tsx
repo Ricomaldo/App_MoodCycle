@@ -7,9 +7,5 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  return (
-    <StyledThemeProvider theme={theme}>
-      {children}
-    </StyledThemeProvider>
-  );
-}; 
+  return <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>;
+};

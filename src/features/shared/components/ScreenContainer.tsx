@@ -8,17 +8,13 @@ interface ScreenContainerProps {
 }
 
 export const ScreenContainer = ({ children, style }: ScreenContainerProps) => {
-  return (
-    <View style={[styles.container, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[styles.container, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: theme.colors.neutral[100],
     flex: 1,
     padding: 16,
-    backgroundColor: theme.colors.neutral[100],
   },
-}); 
+});

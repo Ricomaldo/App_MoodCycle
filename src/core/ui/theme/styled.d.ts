@@ -5,6 +5,6 @@ declare module 'styled-components/native' {
   export interface DefaultTheme extends Theme {}
 }
 
-export type StyledProps<P = {}> = P & {
+export type StyledProps<P = object> = P & {
   theme: Theme;
-}; 
+};

@@ -68,4 +68,4 @@ export interface SessionPerformance {
   responseTime: number;
   networkRequests: number;
   errors: number;
-} 
+}

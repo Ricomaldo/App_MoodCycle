@@ -14,11 +14,5 @@ const adapter = new SQLiteAdapter({
 
 export const database = new Database({
   adapter,
-  modelClasses: [
-    CycleModel,
-    ConversationModel,
-    MessageModel,
-    UserModel,
-    DailyEntryModel,
-  ],
-}); 
+  modelClasses: [CycleModel, ConversationModel, MessageModel, UserModel, DailyEntryModel],
+});

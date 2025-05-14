@@ -10,4 +10,4 @@ export class GetConversationHistoryUseCase {
     }
     return this.conversationRepository.getCurrentConversation();
   }
-} 
+}

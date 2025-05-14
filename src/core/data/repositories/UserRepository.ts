@@ -13,10 +13,8 @@ export class UserRepository implements IUserRepository {
 
   async getUserByEmail(email: string): Promise<User | null> {
     const users = await database.collections.get<UserModel>('users');
-    const user = await users.query(
-      Q.where('email', email)
-    ).fetch();
-    
+    const user = await users.query(Q.where('email', email)).fetch();
+
     return user.length > 0 ? this.mapToEntity(user[0]) : null;
   }
 
@@ -66,7 +64,7 @@ export class UserRepository implements IUserRepository {
       preferences: model.preferences,
       engagement: model.engagement,
       createdAt: model.createdAt,
-      lastLogin: model.lastLogin
+      lastLogin: model.lastLogin,
     };
   }
-} 
+}
