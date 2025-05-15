@@ -22,7 +22,7 @@ export const HomeStackNavigator: React.FC = () => {
         },
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Accueil' }} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Accueil' }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profil' }} />
       <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Paramètres' }} />
     </Stack.Navigator>

@@ -2,7 +2,7 @@ export interface Message {
   id: string;
   content: string;
   isUser: boolean;
-  timestamp: number;
+  timestamp: string;
   metadata?: {
     phase?: string;
     mood?: number;

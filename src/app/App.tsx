@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { store } from '../store';
 import { ThemeProvider } from '../core/ui/theme/ThemeProvider';
+import { theme } from '../core/ui/theme/theme';
 
 const Tab = createBottomTabNavigator();
 const queryClient = new QueryClient();
@@ -42,7 +43,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.neutral[100],
     flex: 1,
     justifyContent: 'center',
   },
