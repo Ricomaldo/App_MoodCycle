@@ -24,7 +24,7 @@ export const MainTabNavigator = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         component={HomeStackNavigator}
         options={{
           tabBarLabel: 'Accueil',
@@ -32,7 +32,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Cycle"
+        name="CycleTab"
         component={CycleStackNavigator}
         options={{
           tabBarLabel: 'Cycle',
@@ -40,7 +40,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Conversation"
+        name="ConversationTab"
         component={ConversationStackNavigator}
         options={{
           tabBarLabel: 'Chat',
@@ -48,7 +48,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Wisdom"
+        name="WisdomTab"
         component={WisdomStackNavigator}
         options={{
           tabBarLabel: 'Sagesse',

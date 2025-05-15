@@ -22,7 +22,7 @@ export const ConversationStackNavigator: React.FC = () => {
       }}
     >
       <Stack.Screen
-        name="Conversation"
+        name="ConversationScreen"
         component={ConversationScreen}
         options={{ title: 'Chat' }}
       />

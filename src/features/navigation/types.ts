@@ -6,10 +6,10 @@ export type RootStackParamList = {
 };
 
 export type MainTabParamList = {
-  Home: NavigatorScreenParams<HomeStackParamList>;
-  Cycle: NavigatorScreenParams<CycleStackParamList>;
-  Conversation: NavigatorScreenParams<ConversationStackParamList>;
-  Wisdom: NavigatorScreenParams<WisdomStackParamList>;
+  HomeTab: NavigatorScreenParams<HomeStackParamList>;
+  CycleTab: NavigatorScreenParams<CycleStackParamList>;
+  ConversationTab: NavigatorScreenParams<ConversationStackParamList>;
+  WisdomTab: NavigatorScreenParams<WisdomStackParamList>;
 };
 
 export type HomeStackParamList = {
