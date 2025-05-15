@@ -1,4 +1,4 @@
-export type CyclePhase = 'menstruation' | 'follicular' | 'ovulation' | 'luteal';
+export type CyclePhaseType = 'menstruation' | 'follicular' | 'ovulation' | 'luteal';
 
 export type MoodType =
   | 'happy'
@@ -30,15 +30,30 @@ export interface DailyEntry {
   contraception?: boolean;
 }
 
+export interface CyclePhase {
+  id: string;
+  type: CyclePhaseType;
+  startDate: Date;
+  endDate: Date;
+  symptoms: string[];
+  mood: number;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Cycle {
   id: string;
   userId: string;
   startDate: Date;
   endDate?: Date;
-  phase: CyclePhase;
-  entries: DailyEntry[];
+  phase: CyclePhase[];
+  symptoms: string[];
+  mood: number;
+  notes?: string;
   averageLength?: number;
-  isCurrent: boolean;
+  isCurrent?: boolean;
+  entries?: DailyEntry[];
   createdAt: Date;
   updatedAt: Date;
 }

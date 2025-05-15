@@ -1,16 +1,19 @@
 export interface UserProfile {
-  firstName: string;
-  lastName: string;
-  birthDate?: Date;
-  gender?: string;
-  avatar?: string;
+  name: string;
+  birthDate: Date;
+  cycleLength?: number;
+  periodLength?: number;
+  lastPeriodStart?: Date;
 }
 
 export interface UserPreferences {
   notifications: boolean;
-  darkMode: boolean;
+  theme: 'light' | 'dark' | 'system';
   language: string;
-  theme: string;
+  privacySettings: {
+    shareData: boolean;
+    sharePredictions: boolean;
+  };
 }
 
 export interface UserEngagement {
@@ -24,9 +27,10 @@ export interface User {
   id: string;
   email: string;
   passwordHash: string;
-  createdAt: Date;
-  lastLogin?: Date;
   profile: UserProfile;
   preferences: UserPreferences;
   engagement: UserEngagement;
+  createdAt: Date;
+  updatedAt: Date;
+  lastLogin?: Date;
 }

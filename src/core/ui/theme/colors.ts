@@ -1,10 +1,20 @@
 export const colors = {
+  background: {
+    primary: '#ffffff',
+    secondary: '#f5f5f5',
+    error: '#ffebee',
+  },
+  text: {
+    primary: '#000000',
+    secondary: '#999999',
+    error: '#c62828',
+  },
   // Couleurs principales
   primary: '#E91E63',
   secondary: '#CDDC39',
 
-  // Couleurs des phases
-  phases: {
+  // Couleurs des phase
+  phase: {
     menstruation: '#F44336',
     follicular: '#FFC107',
     ovulation: '#00BCD4',

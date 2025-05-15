@@ -1,5 +1,5 @@
 /**
- * Définition des phases du cycle menstruel
+ * Définition des phase du cycle menstruel
  */
 export type CyclePhaseType = 'MENSTRUAL' | 'FOLLICULAR' | 'OVULATORY' | 'LUTEAL';
 

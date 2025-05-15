@@ -1,7 +1,7 @@
 import { CyclePhase as CyclePhaseType } from '../Cycle';
 
 /**
- * Enumération des phases du cycle menstruel
+ * Enumération des phase du cycle menstruel
  */
 export const CyclePhase = {
   MENSTRUAL: 'menstruation' as CyclePhaseType,

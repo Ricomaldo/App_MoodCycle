@@ -48,13 +48,13 @@ export const CycleSegment: React.FC<CycleSegmentProps> = ({
   const getPhaseColor = () => {
     switch (phase) {
       case 'MENSTRUAL':
-        return theme.colors.phases.menstrual;
+        return theme.colors.phase.menstruation;
       case 'FOLLICULAR':
-        return theme.colors.phases.follicular;
+        return theme.colors.phase.follicular;
       case 'OVULATORY':
-        return theme.colors.phases.ovulatory;
+        return theme.colors.phase.ovulation;
       case 'LUTEAL':
-        return theme.colors.phases.luteal;
+        return theme.colors.phase.luteal;
       default:
         return theme.colors.primary;
     }
@@ -65,7 +65,7 @@ export const CycleSegment: React.FC<CycleSegmentProps> = ({
       <Path
         d={createArc()}
         fill={getPhaseColor()}
-        stroke={theme.colors.background}
+        stroke={theme.colors.neutral[100]}
         strokeWidth={1}
         onPress={onPress}
       />

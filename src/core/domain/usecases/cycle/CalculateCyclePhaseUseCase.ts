@@ -29,7 +29,7 @@ export class CalculateCyclePhaseUseCase {
   execute(params: CalculateCyclePhaseParams): CalculateCyclePhaseResult {
     const { lastPeriodStartDate, cycleLength, currentDate = new Date() } = params;
 
-    // Valeurs par défaut pour les durées des phases
+    // Valeurs par défaut pour les durées des phase
     const menstrualPhaseDuration = 5; // Jours
     const follicularPhaseDuration = Math.max(5, cycleLength - 19); // Variable selon cycle
     const ovulatoryPhaseDuration = 5; // Jours

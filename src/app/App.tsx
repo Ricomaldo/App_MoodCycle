@@ -6,15 +6,36 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { store } from '../store';
 import { ThemeProvider } from '../core/ui/theme/ThemeProvider';
-import { theme } from '../core/ui/theme/theme';
+import { useRealmSync } from '../core/hooks/useRealmSync';
 
 const Tab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 function HomeScreen() {
+  const { isInitialized, error } = useRealmSync();
+
+  if (!isInitialized) {
+    return (
+      <View style={styles.container}>
+        <Text>Initialisation de la base de données...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text>Erreur lors de l&apos;initialisation : {error.message}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Écran d&apos;accueil</Text>
+      <Text>
+        Bienvenue sur MoodCycle, l&apos;application de suivi du cycle menstruel de l&apos;équipe
+        Melune. C&apos;est parti !
+      </Text>
     </View>
   );
 }
@@ -39,7 +60,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: theme.colors.neutral[100],
+    backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
   },

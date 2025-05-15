@@ -29,7 +29,7 @@ export const NextPeriodInfo: React.FC<NextPeriodInfoProps> = ({
 
   return (
     <Card style={styles.container}>
-      <Text variant="body" weight="bold" style={{ color: theme.colors.phases.menstruation }}>
+      <Text variant="body" weight="bold" style={{ color: theme.colors.phase.menstruation }}>
         {getMessage()}
       </Text>
       {daysUntilNextPeriod > 0 && (

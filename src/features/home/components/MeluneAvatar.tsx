@@ -43,13 +43,13 @@ export const MeluneAvatar: React.FC<MeluneAvatarProps> = ({
   const getAvatarColor = () => {
     switch (phase) {
       case CyclePhase.MENSTRUAL:
-        return theme.colors.phases.menstruation;
+        return theme.colors.phase.menstruation;
       case CyclePhase.FOLLICULAR:
-        return theme.colors.phases.follicular;
+        return theme.colors.phase.follicular;
       case CyclePhase.OVULATORY:
-        return theme.colors.phases.ovulation;
+        return theme.colors.phase.ovulation;
       case CyclePhase.LUTEAL:
-        return theme.colors.phases.luteal;
+        return theme.colors.phase.luteal;
       default:
         return theme.colors.primary;
     }

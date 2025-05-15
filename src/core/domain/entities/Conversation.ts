@@ -1,23 +1,25 @@
 export interface Message {
   id: string;
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  timestamp: Date;
-  isUser: boolean;
-  metadata?: {
-    mood?: number;
-    cyclePhase?: string;
-    context?: string;
-  };
+  createdAt: Date;
+  metadata?: Record<string, any>;
+}
+
+export interface ConversationContext {
+  cycleId?: string;
+  phase?: string;
+  userMood?: number;
+  userSymptoms?: string[];
+  metadata?: Record<string, any>;
 }
 
 export interface Conversation {
   id: string;
+  userId: string;
+  title: string;
   messages: Message[];
-  startDate: Date;
-  lastMessageDate: Date;
-  context?: {
-    currentPhase?: string;
-    userMood?: number;
-    userSymptoms?: string[];
-  };
+  context?: ConversationContext;
+  createdAt: Date;
+  updatedAt: Date;
 }

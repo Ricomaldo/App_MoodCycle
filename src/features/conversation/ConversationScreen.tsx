@@ -13,8 +13,7 @@ import { useConversation } from '../../core/hooks/useConversation';
 import { SendMessageUseCase } from '../../core/domain/usecases/conversation/SendMessageUseCase';
 import { GetConversationHistoryUseCase } from '../../core/domain/usecases/conversation/GetConversationHistoryUseCase';
 import { ClaudeService } from '../../core/services/claude/ClaudeService';
-import { WatermelonConversationRepository } from '../../core/data/repositories/WatermelonConversationRepository';
-import { database } from '../../core/data/database';
+import { ConversationRepository } from '../../core/data/repositories/ConversationRepository';
 
 interface MessageBubbleProps {
   content: string;
@@ -35,7 +34,7 @@ export const ConversationScreen: React.FC = () => {
 
   // Initialisation des dépendances
   const claudeService = new ClaudeService();
-  const conversationRepository = new WatermelonConversationRepository(database);
+  const conversationRepository = new ConversationRepository();
   const sendMessageUseCase = new SendMessageUseCase(claudeService, conversationRepository);
   const getConversationHistoryUseCase = new GetConversationHistoryUseCase(conversationRepository);
 
