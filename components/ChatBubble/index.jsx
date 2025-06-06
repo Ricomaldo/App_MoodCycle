@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   meluneText: {
-    color: 'white',
+    color: theme.getTextColorOn(theme.colors.primary),
   },
 });
