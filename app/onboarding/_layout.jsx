@@ -8,7 +8,9 @@ export default function OnboardingLayout() {
       <Stack.Screen name="300-confiance" />
       <Stack.Screen name="400-cycle" />
       <Stack.Screen name="500-preferences" />
+      <Stack.Screen name="550-prenom" />
       <Stack.Screen name="600-avatar" />
+      <Stack.Screen name="800-paywall" />
       <Stack.Screen name="700-cadeau" />
     </Stack>
   );

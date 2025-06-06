@@ -2,11 +2,25 @@
 
 ## 🏗️ Structure Générale
 
-L'application utilise **Expo Router** avec une architecture de navigation en onglets (tabs) et un flux d'onboarding.
+L'application utilise **Expo Router** avec une architecture de navigation en onglets (tabs), un flux d'onboarding, et une stack **offline-first** avec Zustand + TanStack Query.
 
+### Architecture finale
+```
+MoodCycle/
+├── app/                    # Expo Router (Routes uniquement)
+├── stores/                 # Zustand stores (State management)
+├── services/               # API + offline queue
+├── components/             # Composants UI réutilisables
+├── hooks/                  # Custom hooks
+├── utils/                  # Utilitaires
+├── contexts/               # ⚠️ Migration vers stores/ en cours
+└── data/                   # Données statiques (phases.json, etc.)
+```
+
+### Structure des routes (app/)
 ```
 app/
-├── _layout.jsx                  # Layout racine avec SafeAreaProvider
+├── _layout.jsx                  # Layout racine avec SafeAreaProvider + Providers
 ├── index.jsx                   # Redirection vers /(tabs)/home
 ├── onboarding/                 # Flux d'onboarding conversationnel avec Melune (7 écrans)
 │   ├── _layout.jsx            # Layout Stack pour onboarding
@@ -34,6 +48,59 @@ app/
         └── index.jsx
 ```
 
+## 🏪 Architecture Offline-First
+
+### Stack technologique
+- **State Management** : Zustand (remplace contexts/)
+- **Data Fetching** : TanStack Query (cache + sync)
+- **Network Detection** : @react-native-community/netinfo
+- **Storage** : AsyncStorage (existant)
+
+### Stores Zustand (stores/)
+```
+stores/
+├── useUserStore.js         # Données utilisateur (profil, préférences)
+├── useCycleStore.js        # Données du cycle (phases, insights)
+├── useChatStore.js         # Historique conversations Melune
+├── useOnboardingStore.js   # Migration de OnboardingContext
+└── useAppStore.js          # État global app (thème, navigation)
+```
+
+### Services API (services/)
+```
+services/
+├── api/
+│   ├── client.js           # Configuration Axios + interceptors
+│   ├── auth.js             # Authentification API
+│   ├── cycle.js            # API données cycle
+│   └── chat.js             # API conversations IA
+├── offline/
+│   ├── queue.js            # Queue actions offline
+│   └── sync.js             # Synchronisation online/offline
+└── storage/
+    ├── cache.js            # Gestion cache local
+    └── persistence.js      # Persistence données critiques
+```
+
+## 🔄 Migration en cours
+
+### ⚠️ Étapes de migration contexts/ → stores/
+1. **OnboardingContext.jsx** → **useOnboardingStore.js** (Zustand)
+2. **Autres contexts** → **Stores spécialisés**
+3. **Mise à jour imports** dans les composants
+4. **Tests validation** migration
+
+### 📦 Dépendances ajoutées
+```json
+{
+  "dependencies": {
+    "zustand": "^4.x.x",
+    "@tanstack/react-query": "^5.x.x", 
+    "@react-native-community/netinfo": "^11.x.x"
+  }
+}
+```
+
 ## 🌙 Flux d'Onboarding Conversationnel avec Melune
 
 ### Navigation linéaire (7 écrans)
@@ -45,18 +112,21 @@ app/
 6. **600-avatar.jsx** - Personnalisation de l'apparence et du ton de Melune
 7. **700-cadeau.jsx** - Cadeau de bienvenue et transition vers l'app → `router.replace('/(tabs)/home')`
 
-### Structure des écrans conversationnels
+### Structure des écrans conversationnels (Migration Zustand)
 ```jsx
-// Exemple type pour chaque écran conversationnel avec Melune
+// AVANT (Context)
 import { useOnboarding } from '../../contexts/OnboardingContext';
+
+// APRÈS (Zustand Store)  
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 
 export default function ConversationalScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateUserInfo, updatePreferences } = useOnboarding();
+  const { updateUserInfo, updatePreferences } = useOnboardingStore();
   
   const handleContinue = (collectedData) => {
-    // Sauvegarder les données collectées dans le context
+    // Sauvegarder les données collectées dans le store Zustand
     updateUserInfo(collectedData);
     router.push('/onboarding/[next-screen]');
   };
@@ -80,11 +150,6 @@ export default function ConversationalScreen() {
   );
 }
 ```
-
-### Gestion des données avec Context
-- **OnboardingContext** : Collecte et stockage des données utilisateur
-- **Navigation progressive** : Chaque écran enrichit le profil utilisateur
-- **Personnalisation Melune** : Adapte le ton et les conseils selon les préférences
 
 ## 🎯 Principes de Design (Simplifiés)
 
@@ -162,7 +227,8 @@ export default function ChatScreen() {
 ✅ **Spacing uniforme** sur toutes les pages  
 ✅ **Chat fonctionnel** avec input au bon endroit  
 ✅ **Navigation CycleWheel** vers pages de phases  
-✅ **Architecture simple** et maintenable  
+✅ **Architecture offline-first** avec Zustand + TanStack Query  
+✅ **Stack moderne** compatible Expo Router  
 
 ## 🛠️ Maintenance
 
@@ -175,12 +241,27 @@ export default function ChatScreen() {
 ### Onboarding conversationnel
 - **Ajout d'écran** : Créer fichier avec numérotation logique + conversation Melune
 - **Modifier l'ordre** : Ajuster les `router.push()` et logique de collecte de données
-- **Gestion des données** : Utiliser `useOnboarding()` context pour sauvegarder les réponses
+- **Gestion des données** : Utiliser `useOnboardingStore()` Zustand pour sauvegarder les réponses
 - **Avatar Melune** : Composant `<MeluneAvatar />` avec différentes expressions
 - **Skip onboarding** : Rediriger depuis `app/index.jsx` vers `/(tabs)/home` directement
+
+### Architecture offline-first
+- **Nouveau store** : Créer dans `stores/` avec Zustand
+- **Nouveau service** : Créer dans `services/` pour API calls
+- **Migration context** : Remplacer `useContext()` par `useStore()`
+- **Cache données** : Utiliser TanStack Query pour cache + sync
+- **État offline** : Gérer avec NetInfo + queue d'actions
 
 ## 📏 Valeurs de référence
 
 - **Tab bar height** : 85px (définie dans `(tabs)/_layout.jsx`)
 - **Chat inputContainer marginBottom** : 85px (pour éviter la tab bar)
 - **Safe area** : Automatique avec `useSafeAreaInsets()` 
+
+## 🎯 Prochaines étapes
+
+1. **Créer premier store** : `useOnboardingStore.js` pour remplacer `OnboardingContext`
+2. **Configurer TanStack Query** : Provider dans `app/_layout.jsx`
+3. **Créer service API** : `services/api/client.js` avec Axios
+4. **Tester migration** : Valider fonctionnement avec nouveaux stores
+5. **Documenter patterns** : Ajouter exemples d'utilisation Zustand + TanStack Query 

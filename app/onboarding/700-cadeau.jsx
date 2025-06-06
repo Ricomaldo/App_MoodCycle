@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -12,7 +12,7 @@ import ChatBubble from '../../components/ChatBubble';
 export default function CadeauScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { onboardingData, updateFirstInsight, completeOnboarding } = useOnboarding();
+  const { userInfo, preferences, melune, updateFirstInsight, completeOnboarding } = useOnboardingStore();
   
   const [showInsight, setShowInsight] = useState(false);
   const [personalizedInsight, setPersonalizedInsight] = useState('');
@@ -75,7 +75,9 @@ export default function CadeauScreen() {
   };
 
   const generatePersonalizedInsight = () => {
-    const { journeyChoice, cycleData, preferences, melune } = onboardingData;
+    const journeyChoice = useOnboardingStore.getState().journeyChoice;
+    const cycleData = useOnboardingStore.getState().cycleData;
+    // preferences et melune sont déjà dans le scope de la fonction
     
     // Calculer la phase estimée du cycle
     const estimatedPhase = calculateCurrentPhase(cycleData);
@@ -158,12 +160,14 @@ export default function CadeauScreen() {
   };
 
   const formatInsightMessage = (base, phase, advice, tone) => {
+    const nom = userInfo.prenom || 'belle âme';
+    
     if (tone === 'professional') {
-      return `${base}. D'après ton profil, ${phase.toLowerCase()}. ${advice}.`;
+      return `${nom}, ${base}. D'après ton profil, ${phase.toLowerCase()}. ${advice}.`;
     } else if (tone === 'inspiring') {
-      return `${base} ✨ ${phase}, et c'est magnifique ! ${advice}. Tu es une déesse en devenir ! 🌙`;
+      return `${nom}, ${base} ✨ ${phase}, et c'est magnifique ! ${advice}. Tu es une déesse en devenir ! 🌙`;
     } else { // friendly
-      return `${base} 💜 ${phase}. ${advice}. J'ai hâte de partager ce voyage avec toi ! 🌸`;
+      return `${nom}, ${base} 💜 ${phase}. ${advice}. J'ai hâte de partager ce voyage avec toi ! 🌸`;
     }
   };
 
@@ -247,7 +251,7 @@ export default function CadeauScreen() {
             <MeluneAvatar 
               phase="ovulation" 
               size="medium" 
-              style={onboardingData.melune?.avatarStyle || 'classic'}
+              style={melune?.avatarStyle || 'classic'}
             />
           </Animated.View>
 
@@ -262,7 +266,10 @@ export default function CadeauScreen() {
             ]}
           >
             <ChatBubble 
-              message="Félicitations ! Notre connexion est maintenant établie. J'ai un cadeau spécial pour toi... 🎁" 
+              message={userInfo.prenom ? 
+                `Félicitations ${userInfo.prenom} ! Tu as débloqué ton insight personnalisé premium... 🎁✨` :
+                "Félicitations ! Notre connexion est maintenant établie. J'ai un cadeau spécial pour toi... 🎁"
+              }
               isUser={false} 
             />
           </Animated.View>
@@ -287,7 +294,12 @@ export default function CadeauScreen() {
             >
               <View style={styles.giftBox}>
                 <BodyText style={styles.giftIcon}>🎁</BodyText>
-                <BodyText style={styles.giftTitle}>Ton premier insight personnalisé</BodyText>
+                <BodyText style={styles.giftTitle}>
+                  {userInfo.prenom ? 
+                    `${userInfo.prenom}, voici ton insight premium personnalisé` :
+                    'Ton premier insight personnalisé'
+                  }
+                </BodyText>
               </View>
               
               <View style={styles.insightCard}>
@@ -296,10 +308,13 @@ export default function CadeauScreen() {
 
               <View style={styles.celebrationMessage}>
                 <BodyText style={styles.celebrationText}>
-                  Bienvenue dans ton univers MoodCycle ! 🌸
+                  {userInfo.prenom ? 
+                    `Bienvenue dans ton univers premium, ${userInfo.prenom} ! 🌸` :
+                    'Bienvenue dans ton univers MoodCycle ! 🌸'
+                  }
                 </BodyText>
                 <BodyText style={styles.celebrationSubtext}>
-                  Cette sagesse n'est que le début de notre voyage ensemble...
+                  Cette sagesse premium n'est que le début de notre voyage ensemble...
                 </BodyText>
               </View>
             </Animated.View>

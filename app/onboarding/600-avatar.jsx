@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -60,7 +60,7 @@ const COMMUNICATION_TONES = [
 export default function AvatarScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { onboardingData, updateMelune } = useOnboarding();
+  const { preferences, updateMelune, calculateMelunePersonality } = useOnboardingStore();
   
   const [selectedAvatarStyle, setSelectedAvatarStyle] = useState('classic');
   const [selectedTone, setSelectedTone] = useState('friendly');
@@ -107,7 +107,7 @@ export default function AvatarScreen() {
     });
     
     setTimeout(() => {
-      router.push('/onboarding/700-cadeau');
+      router.push('/onboarding/800-paywall');
     }, 300);
   };
 

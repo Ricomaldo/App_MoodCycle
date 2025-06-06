@@ -1,6 +1,5 @@
 // config/theme.js
 import { StyleSheet } from 'react-native';
-import { getContrastingTextColor, isLightColor, isDarkColor } from '../utils/colors';
 
 export const theme = {
     colors: {
@@ -68,13 +67,42 @@ export const theme = {
       large: 24,
       pill: 999,
     },
-    // Fonction globale de contraste
-    getTextColorOn(bgColor) {
-      return getContrastingTextColor(bgColor);
-    },
-    // Fonctions utilitaires pour tester les couleurs
-    isLightColor,
-    isDarkColor,
+  };
+
+  // Fonctions utilitaires pour le contraste automatique
+  
+  // Convertir hex en RGB
+  const hexToRgb = (hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  };
+  
+  // Calculer la luminance selon W3C
+  const getLuminance = (color) => {
+    const rgb = hexToRgb(color);
+    if (!rgb) return 0;
+    
+    // Formule W3C pour la luminance relative
+    return 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
+  };
+  
+  // Déterminer si une couleur est claire
+  theme.isLightColor = (color) => {
+    return getLuminance(color) > 186;
+  };
+  
+  // Déterminer si une couleur est foncée
+  theme.isDarkColor = (color) => {
+    return getLuminance(color) <= 186;
+  };
+  
+  // Obtenir la couleur de texte optimale pour un fond donné
+  theme.getTextColorOn = (backgroundColor) => {
+    return theme.isLightColor(backgroundColor) ? theme.colors.text : '#FFFFFF';
   };
   
   // Créer des styles avec accès au thème

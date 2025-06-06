@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -12,7 +12,7 @@ import ChatBubble from '../../components/ChatBubble';
 export default function RencontreScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateUserInfo } = useOnboarding();
+  const { updateJourneyChoice } = useOnboardingStore();
   
   const [selectedChoice, setSelectedChoice] = useState(null);
   
@@ -37,10 +37,10 @@ export default function RencontreScreen() {
   const handleChoiceSelect = (choice) => {
     setSelectedChoice(choice.id);
     
-    // Sauvegarder dans le context
-    updateUserInfo({ 
-      motivation: choice.id,
-      motivationLabel: choice.label 
+    // Sauvegarder dans le store Zustand
+    updateJourneyChoice({ 
+      selectedOption: choice.id,
+      motivation: choice.label 
     });
 
     // Petit délai pour montrer la sélection, puis naviguer

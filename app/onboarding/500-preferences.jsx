@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -57,7 +57,7 @@ const PREFERENCES_CONFIG = [
 export default function PreferencesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updatePreferences } = useOnboarding();
+  const { updatePreferences } = useOnboardingStore();
   
   // États des préférences (0-5 pour chaque dimension)
   const [preferences, setPreferences] = useState({
@@ -109,7 +109,7 @@ export default function PreferencesScreen() {
       updatePreferences(preferences);
       
       setTimeout(() => {
-        router.push('/onboarding/600-avatar');
+        router.push('/onboarding/550-prenom');
       }, 300);
     }
   };

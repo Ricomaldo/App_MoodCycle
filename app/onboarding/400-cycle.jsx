@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated, ScrollView, Platform } fr
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -13,7 +13,7 @@ import ChatBubble from '../../components/ChatBubble';
 export default function CycleScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateCycleData } = useOnboarding();
+  const { updateCycleData } = useOnboardingStore();
   
   // États
   const [step, setStep] = useState(1); // 1: intro, 2: date, 3: durée, 4: validation

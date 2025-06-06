@@ -3,14 +3,13 @@ import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading1, Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
-
 
 export default function PromesseScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateUserInfo } = useOnboarding();
+  const { updateUserInfo } = useOnboardingStore();
   
   // Animation simple
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -32,8 +31,6 @@ export default function PromesseScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-
-
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         
         {/* Illustration simple */}

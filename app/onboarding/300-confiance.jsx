@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading2, BodyText } from '../../components/Typography';
-import { useOnboarding } from '../../contexts/OnboardingContext';
+import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
@@ -12,7 +12,7 @@ import ChatBubble from '../../components/ChatBubble';
 export default function ConfidenceScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateUserInfo } = useOnboarding();
+  const { updateUserInfo } = useOnboardingStore();
   
   // Animation simple
   const fadeAnim = useRef(new Animated.Value(0)).current;
