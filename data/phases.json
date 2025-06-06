@@ -1,0 +1,126 @@
+{
+    "menstrual": {
+      "id": "menstrual",
+      "name": "Phase menstruelle",
+      "slug": "menstruelle", 
+      "color": "#F44336",
+      "duration": "Jours 1-5",
+      "energy": "Basse",
+      "mood": "Introspective",
+      "description": "Phase de renouvellement et d'introspection profonde. Ton corps fait le grand nettoyage.",
+      "characteristics": {
+        "physical": ["Règles", "Crampes possibles", "Fatigue naturelle", "Sensibilité accrue"],
+        "emotional": ["Besoin de calme", "Intuition forte", "Émotions à fleur de peau", "Envie de cocooning"],
+        "energy": "Énergie au plus bas, c'est normal et nécessaire"
+      },
+      "advice": {
+        "nutrition": ["Fer (épinards, lentilles)", "Magnésium (chocolat noir)", "Tisanes apaisantes", "Hydratation ++"],
+        "activities": ["Yoga doux", "Méditation", "Lecture", "Bain chaud", "Repos"],
+        "selfcare": ["Bouillotte", "Massage abdominal", "Coucher tôt", "Dire non aux sollicitations"],
+        "avoid": ["Sport intense", "Décisions importantes", "Surcharge sociale"]
+      },
+      "rituals": [
+        "Rituel du cocon : créer un espace douillet",
+        "Journaling intuitif au réveil",
+        "Tisane rouge avec intention",
+        "Massage à l'huile chaude"
+      ],
+      "affirmation": "Je m'accorde le droit de ralentir et d'écouter mon corps.",
+      "symbol": "🌙",
+      "element": "Eau",
+      "archetype": "La Sage"
+    },
+    "follicular": {
+      "id": "follicular",
+      "name": "Phase folliculaire", 
+      "slug": "folliculaire",
+      "color": "#FFC107",
+      "duration": "Jours 6-13",
+      "energy": "Croissante",
+      "mood": "Optimiste",
+      "description": "Phase de renaissance et créativité. Ton énergie remonte comme la sève au printemps.",
+      "characteristics": {
+        "physical": ["Énergie en hausse", "Peau plus claire", "Libido qui revient", "Force physique"],
+        "emotional": ["Optimisme naturel", "Envie de nouveauté", "Confiance grandissante", "Curiosité éveillée"],
+        "energy": "Montée progressive, parfait pour commencer"
+      },
+      "advice": {
+        "nutrition": ["Protéines (œufs, poisson)", "Légumes verts", "Graines germées", "Fruits frais"],
+        "activities": ["Sport modéré", "Nouveaux projets", "Apprentissage", "Socialisation douce"],
+        "selfcare": ["Routine beauté", "Planification", "Créativité", "Exploration"],
+        "avoid": ["Se surmener", "Promettre trop", "Ignorer les signaux de fatigue"]
+      },
+      "rituals": [
+        "Rituel du nouveau départ",
+        "Écriture de intentions", 
+        "Promenade matinale consciente",
+        "Création artistique libre"
+      ],
+      "affirmation": "Je grandis et j'explore avec confiance mes nouveaux possibles.",
+      "symbol": "🌱",
+      "element": "Air", 
+      "archetype": "L'Exploratrice"
+    },
+    "ovulatory": {
+      "id": "ovulatory",
+      "name": "Phase ovulatoire",
+      "slug": "ovulatoire", 
+      "color": "#00BCD4",
+      "duration": "Jours 14-17",
+      "energy": "Maximum",
+      "mood": "Rayonnante",
+      "description": "Phase de pleine puissance et connexion. Tu rayonnes naturellement.",
+      "characteristics": {
+        "physical": ["Énergie au top", "Peau éclatante", "Libido élevée", "Force et endurance"],
+        "emotional": ["Confiance totale", "Charisme naturel", "Empathie forte", "Communication fluide"],
+        "energy": "Pic énergétique, parfait pour tout oser"
+      },
+      "advice": {
+        "nutrition": ["Légumes colorés", "Fruits antioxydants", "Bonnes graisses", "Hydratation"],
+        "activities": ["Sport intense", "Présentations", "Négociations", "Sorties sociales"],
+        "selfcare": ["Rayonner naturellement", "Partager", "Leader", "Exprimer"],
+        "avoid": ["Gaspiller cette énergie", "S'isoler", "Sous-estimer sa force"]
+      },
+      "rituals": [
+        "Rituel de rayonnement",
+        "Affirmations puissantes",
+        "Danse libre et joyeuse", 
+        "Connexion avec d'autres femmes"
+      ],
+      "affirmation": "Je rayonne ma lumière intérieure et j'ose briller pleinement.",
+      "symbol": "☀️",
+      "element": "Feu",
+      "archetype": "La Déesse"
+    },
+    "luteal": {
+      "id": "luteal", 
+      "name": "Phase lutéale",
+      "slug": "luteale",
+      "color": "#673AB7",
+      "duration": "Jours 18-28", 
+      "energy": "Décroissante",
+      "mood": "Intuitive",
+      "description": "Phase d'organisation et de préparation. Ton intuition est ton superpouvoir.",
+      "characteristics": {
+        "physical": ["Énergie qui baisse", "Seins sensibles", "Appétit changeant", "Besoin de ralentir"],
+        "emotional": ["Intuition aiguisée", "Perfectionnisme", "Sensibilité++", "Besoin de tri"],
+        "energy": "Déclin progressif, parfait pour finaliser"
+      },
+      "advice": {
+        "nutrition": ["Glucides complexes", "Magnésium", "Oméga-3", "Tisanes calmantes"],
+        "activities": ["Finaliser projets", "Ranger", "Planifier", "Activités calmes"],
+        "selfcare": ["Écouter intuition", "Limites claires", "Sommeil++", "Moins de social"],
+        "avoid": ["Nouveaux projets", "Décisions sous stress", "Critique de soi"]
+      },
+      "rituals": [
+        "Rituel de clôture et bilan",
+        "Méditation guidée profonde",
+        "Tri et libération", 
+        "Préparation au cycle suivant"
+      ],
+      "affirmation": "Je fais confiance à mon intuition et j'honore mes limites.",
+      "symbol": "🔮",
+      "element": "Terre",
+      "archetype": "La Prêtresse"
+    }
+  }
