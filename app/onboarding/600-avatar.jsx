@@ -107,7 +107,7 @@ export default function AvatarScreen() {
     });
     
     setTimeout(() => {
-      router.push('/onboarding/800-paywall');
+      router.push('/onboarding/700-paywall');
     }, 300);
   };
 

@@ -8,7 +8,12 @@ const initialState = {
   userInfo: {
     journeyStarted: false,
     startDate: null,
+    prenom: null,
+    prenomCollectedAt: null,
   },
+  
+  // Gestion des insights vus (anti-répétition)
+  usedInsights: [], // Liste des IDs d'insights déjà vus
   
   // Choix profond de l'écran rencontre
   journeyChoice: {
@@ -100,6 +105,17 @@ export const useOnboardingStore = create(
       updateSubscriptionInfo: (data) =>
         set((state) => ({
           subscription: { ...state.subscription, ...data },
+        })),
+
+      // 🎯 GESTION INSIGHTS VUS
+      markInsightAsUsed: (insightId) =>
+        set((state) => ({
+          usedInsights: [...state.usedInsights, insightId],
+        })),
+
+      resetUsedInsights: () =>
+        set(() => ({
+          usedInsights: [],
         })),
 
       completeOnboarding: () =>

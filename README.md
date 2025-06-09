@@ -55,7 +55,7 @@ MoodCycle/
 │   │   ├── 400-cycle.jsx        # Conversation cycle
 │   │   ├── 500-preferences.jsx  # Préférences conseils
 │   │   ├── 600-avatar.jsx       # Personnalisation Melune
-│   │   └── 700-cadeau.jsx       # Cadeau bienvenue
+│   │   └── 800-cadeau.jsx       # Cadeau bienvenue
 │   └── (tabs)/                   # Navigation principale
 │       ├── home/                 # Accueil + insights
 │       ├── cycle/                # Roue cycle + phases

@@ -12,7 +12,7 @@ const ONBOARDING_SCREENS = [
   { id: '400-cycle', path: '/onboarding/400-cycle', label: '4. Cycle' },
   { id: '500-preferences', path: '/onboarding/500-preferences', label: '5. Préférences' },
   { id: '600-avatar', path: '/onboarding/600-avatar', label: '6. Avatar' },
-  { id: '700-cadeau', path: '/onboarding/700-cadeau', label: '7. Cadeau' },
+  { id: '800-cadeau', path: '/onboarding/800-cadeau', label: '7. Cadeau' },
 ];
 
 export default function DevNavigation({ currentScreen }) {
@@ -70,11 +70,11 @@ export default function DevNavigation({ currentScreen }) {
             router.push('/(tabs)/home');
           }
         }}
-        disabled={!nextScreen && currentScreen !== '700-cadeau'}
+        disabled={!nextScreen && currentScreen !== '800-cadeau'}
       >
         <BodyText style={[
           styles.devButtonText,
-          !nextScreen && currentScreen !== '700-cadeau' && styles.devButtonTextDisabled
+          !nextScreen && currentScreen !== '800-cadeau' && styles.devButtonTextDisabled
         ]}>
           {nextScreen ? 'Suivant →' : 'App →'}
         </BodyText>

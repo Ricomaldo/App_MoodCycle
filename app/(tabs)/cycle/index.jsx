@@ -1,42 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { theme } from '../../../config/theme';
 import CycleWheel from '../../../components/CycleWheel';
 import { Heading, BodyText, Caption } from '../../../components/Typography';
+import { useCycleStore } from '../../../stores/useCycleStore';
+import { useOnboardingStore } from '../../../stores/useOnboardingStore';
+import phases from '../../../data/phases.json';
 
 export default function CycleScreen() {
-  // Pour le MVP, on utilise des valeurs statiques
-  const [currentPhase] = useState('follicular');
-  const [cycleDay] = useState(8);
-  const [cycleLength] = useState(28);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   
-  // Information sur les phases
-  const phaseInfo = {
-    menstrual: {
-      name: "Menstruelle",
-      description: "Phase d'introspection et de renouvellement. Énergie basse, intuition élevée.",
-      duration: "Jours 1-5"
-    },
-    follicular: {
-      name: "Folliculaire",
-      description: "Phase de croissance et de créativité. Énergie en hausse, optimisme.",
-      duration: "Jours 6-13"
-    },
-    ovulatory: {
-      name: "Ovulatoire",
-      description: "Phase de communication et de connexion. Énergie optimale, confiance.",
-      duration: "Jours 14-17"
-    },
-    luteal: {
-      name: "Lutéale",
-      description: "Phase d'organisation et de préparation. Énergie décroissante, intuition.",
-      duration: "Jours 18-28"
+  const { getCurrentPhaseInfo, initializeFromOnboarding } = useCycleStore();
+  const { userInfo, cycleData } = useOnboardingStore();
+  
+  useEffect(() => {
+    if (cycleData.lastPeriodDate) {
+      initializeFromOnboarding(cycleData);
     }
-  };
+  }, [cycleData.lastPeriodDate]);
+  
+  const currentPhaseInfo = getCurrentPhaseInfo();
+  const currentPhase = currentPhaseInfo.phase;
+  const cycleDay = currentPhaseInfo.day;
+  const cycleLength = cycleData.averageCycleLength || 28;
+  const prenom = userInfo.prenom || 'Utilisatrice';
+  
+  // 🎯 SOURCE UNIQUE - Utilisation de phases.json au lieu de données hardcodées
+  const phaseInfo = phases;
 
   // Fonction pour naviguer vers la page de phase
   const navigateToPhase = (phaseId) => {
@@ -62,7 +55,7 @@ export default function CycleScreen() {
         <CycleWheel 
           currentPhase={currentPhase}
           cycleDay={cycleDay}
-          userName="Emma"
+          userName={prenom}
           size={300}
         />
       </View>

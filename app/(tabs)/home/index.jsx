@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -11,9 +11,11 @@ import DevNavigation from '../../../components/DevNavigation/DevNavigation';
 // Stores Zustand
 import { useAppStore } from '../../../stores/useAppStore';
 import { useCycleStore } from '../../../stores/useCycleStore';
+import { useOnboardingStore } from '../../../stores/useOnboardingStore';
 
 // Import des données d'insights (pour le MVP, utilisons des données statiques)
 import { insights } from '../../../data/insights';
+import { getPersonalizedInsight } from '../../../data/insights-personalized';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -21,15 +23,56 @@ export default function HomeScreen() {
   
   // Stores Zustand
   const { toggleDevMode } = useAppStore();
-  const { getCurrentPhaseInfo } = useCycleStore();
+  const { getCurrentPhaseInfo, initializeFromOnboarding } = useCycleStore();
+  const { 
+    userInfo, 
+    cycleData, 
+    preferences, 
+    melune, 
+    usedInsights, 
+    markInsightAsUsed, 
+    resetUsedInsights 
+  } = useOnboardingStore();
   
-  // Pour le MVP, on peut simuler différentes personas et phases
-  const [persona] = useState('Emma');
+  // Récupération du prénom ou fallback si pas encore collecté
+  const prenom = userInfo.prenom || 'toi';
+  
   const phaseInfo = getCurrentPhaseInfo();
   const phase = phaseInfo.phase;
   
-  // On récupère l'insight correspondant à la phase et au persona
-  const currentInsight = insights[phase][persona];
+  // 🎯 INSIGHT PERSONNALISÉ avec anti-répétition
+  const insightResult = getPersonalizedInsight(
+    phase, 
+    preferences,
+    melune,
+    usedInsights
+  );
+  
+  const currentInsight = insightResult.content;
+  
+  // Marquer l'insight comme vu (une seule fois par chargement)
+  useEffect(() => {
+    if (insightResult.id && !usedInsights.includes(insightResult.id)) {
+      markInsightAsUsed(insightResult.id);
+      
+      // Reset automatique si nécessaire
+      if (insightResult.resetNeeded) {
+        resetUsedInsights();
+      }
+    }
+  }, [insightResult.id]);
+  
+  // 👈 AJOUTER CES LIGNES pour debugger
+  console.log('Données du cycle:', cycleData);
+  console.log('Date des dernières règles:', cycleData.lastPeriodDate);
+  
+  // 👈 AJOUTER ce useEffect
+  useEffect(() => {
+    // Si on a une date de règles dans l'onboarding, initialiser le cycle
+    if (cycleData.lastPeriodDate) {
+      initializeFromOnboarding(cycleData);
+    }
+  }, [cycleData.lastPeriodDate]); // Se déclenche quand la date change
   
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -37,7 +80,7 @@ export default function HomeScreen() {
       <DevNavigation />
       
       <View style={styles.header}>
-        <Heading1>Bonjour {persona}</Heading1>
+        <Heading1>Bonjour {prenom}</Heading1>
         <BodyText>Jour {phaseInfo.day} • Phase {phaseInfo.name}</BodyText>
         
         {/* Bouton pour activer le mode dev (triple tap) */}

@@ -30,7 +30,7 @@ app/
 │   ├── 400-cycle.jsx          # Conversation sur le cycle menstruel
 │   ├── 500-preferences.jsx    # Préférences de conseils personnalisés
 │   ├── 600-avatar.jsx         # Personnalisation de l'avatar Melune
-│   └── 700-cadeau.jsx         # Cadeau de bienvenue et finalisation
+│   └── 800-cadeau.jsx         # Cadeau de bienvenue et finalisation
 └── (tabs)/
     ├── _layout.jsx            # Configuration des 4 onglets + icônes
     ├── home/
@@ -110,7 +110,7 @@ services/
 4. **400-cycle.jsx** - Conversation naturelle sur le cycle menstruel
 5. **500-preferences.jsx** - Découverte des préférences de conseils (médical, naturo, spirituel)
 6. **600-avatar.jsx** - Personnalisation de l'apparence et du ton de Melune
-7. **700-cadeau.jsx** - Cadeau de bienvenue et transition vers l'app → `router.replace('/(tabs)/home')`
+7. **800-cadeau.jsx** - Cadeau de bienvenue et transition vers l'app → `router.replace('/(tabs)/home')`
 
 ### Structure des écrans conversationnels (Migration Zustand)
 ```jsx

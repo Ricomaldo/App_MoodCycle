@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { theme } from '../config/theme';
+import phases from '../data/phases.json';
 
 export const useCycleStore = create(
   persist(
@@ -100,19 +102,13 @@ export const useCycleStore = create(
         const { currentCycle } = get();
         const phase = currentCycle.currentPhase;
         
-        const phaseColors = {
-          menstrual: '#F44336',
-          follicular: '#FFC107',
-          ovulatory: '#00BCD4',
-          luteal: '#673AB7',
-        };
+        const phaseColors = theme.colors.phases;
         
-        const phaseNames = {
-          menstrual: 'Menstruelle',
-          follicular: 'Folliculaire',
-          ovulatory: 'Ovulatoire',
-          luteal: 'Lutéale',
-        };
+        // 🎯 SOURCE UNIQUE - Noms depuis phases.json
+        const phaseNames = Object.keys(phases).reduce((acc, key) => {
+          acc[key] = phases[key].name;
+          return acc;
+        }, {});
         
         return {
           name: phaseNames[phase],
@@ -145,6 +141,28 @@ export const useCycleStore = create(
             luteal: [],
           },
         })),
+      
+      // Nouvelle fonction pour initialiser depuis l'onboarding
+      initializeFromOnboarding: (onboardingCycleData) => {
+        const { lastPeriodDate, averageCycleLength = 28 } = onboardingCycleData;
+        
+        if (lastPeriodDate) {
+          const today = new Date();
+          const lastPeriod = new Date(lastPeriodDate);
+          const diffDays = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
+          const currentDay = (diffDays % averageCycleLength) + 1;
+          const currentPhase = get().calculateCurrentPhase(currentDay, averageCycleLength);
+          
+          set((state) => ({
+            currentCycle: {
+              ...state.currentCycle,
+              currentDay,
+              currentPhase,
+              length: averageCycleLength,
+            },
+          }));
+        }
+      },
     }),
     {
       name: 'cycle-storage',

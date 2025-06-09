@@ -138,7 +138,7 @@ theme.getTextColorOn = (backgroundColor) =>
 - `app/onboarding/400-cycle.jsx`
 - `app/onboarding/500-preferences.jsx`
 - `app/onboarding/600-avatar.jsx`
-- `app/onboarding/700-cadeau.jsx`
+- `app/onboarding/800-cadeau.jsx`
 - `app/(tabs)/cycle/phases/[id].jsx`
 
 **Status :** ✅ **Résolu** - Toutes les fonctions de contraste sont maintenant disponibles

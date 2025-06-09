@@ -22,6 +22,7 @@
     "@react-navigation/native": "^7.1.6",
     "@tanstack/react-query": "^5.80.6",
     "expo": "53.0.10",
+    "expo-constants": "^17.1.6",
     "expo-font": "~13.3.1",
     "expo-linear-gradient": "~14.1.5",
     "expo-linking": "~7.1.5",
@@ -48,5 +49,6 @@
     "react-test-renderer": "19.0.0",
     "typescript": "~5.8.3"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538"
 }

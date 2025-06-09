@@ -57,8 +57,8 @@ export default function PaywallScreen() {
       planSelected: 'monthly'
     });
     
-    // Navigation vers l'app principale après l'essai gratuit
-    router.replace('/(tabs)/home');
+    // Navigation vers l'écran cadeau pour recevoir l'insight personnalisé
+    router.push('/onboarding/800-cadeau');
   };
 
   const handleRestore = () => {

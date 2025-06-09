@@ -33,12 +33,12 @@ export default function PromesseScreen() {
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         
-        {/* Illustration simple */}
+        {/* Illustration simple
         <View style={styles.illustrationContainer}>
           <View style={styles.circle}>
             <BodyText style={styles.symbol}>✨</BodyText>
           </View>
-        </View>
+        </View> */}
 
         {/* Titre Hero */}
         <Heading1 style={styles.heroTitle}>
