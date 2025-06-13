@@ -1,30 +1,11 @@
-/**
- * TEMPORAIRE - ÉLÉMENTS À SUPPRIMER APRÈS LES TESTS API
- * -----------------------------------------
- * 1. Imports à supprimer :
- *    - import { testApiConnection } from '../../services/api/testApi';
- *    - import { Alert } from 'react-native'; (si non utilisé ailleurs)
- * 
- * 2. Fonction à supprimer :
- *    - handleTestApi()
- * 
- * 3. Composant à supprimer :
- *    - Le TouchableOpacity avec le bouton "Test API"
- * 
- * 4. Styles à supprimer :
- *    - testButton
- *    - testButtonText
- * -----------------------------------------
- */
-
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Animated, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading1, Heading2, BodyText } from '../../components/Typography';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
-import { testApiConnection } from '../../services/api/testApi';
+import { DevNavigation } from '../../components/DevNavigation';
 
 export default function PromesseScreen() {
   const router = useRouter();
@@ -49,17 +30,11 @@ export default function PromesseScreen() {
     router.push('/onboarding/200-rencontre');
   };
 
-  const handleTestApi = async () => {
-    try {
-      const result = await testApiConnection();
-      Alert.alert('✅ Succès', `API connectée ! Réponse: ${JSON.stringify(result)}`);
-    } catch (error) {
-      Alert.alert('❌ Erreur', `Problème API: ${error.message}`);
-    }
-  };
-
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+      {/* DevNavigation pour le développement */}
+      <DevNavigation />
+      
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         
         {/* Illustration simple
@@ -83,17 +58,6 @@ export default function PromesseScreen() {
         <BodyText style={styles.question}>
           Prête à découvrir qui vous êtes vraiment ?
         </BodyText>
-
-        {/* Bouton de test API */}
-        <TouchableOpacity 
-          style={styles.testButton} 
-          onPress={handleTestApi}
-          activeOpacity={0.8}
-        >
-          <BodyText style={styles.testButtonText}>
-            🧪 Test API
-          </BodyText>
-        </TouchableOpacity>
 
         {/* Bouton Call-to-Action */}
         <TouchableOpacity 
@@ -167,19 +131,6 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xxl,
     fontStyle: 'italic',
   },
-  testButton: {
-    backgroundColor: '#666',
-    paddingVertical: theme.spacing.s,
-    paddingHorizontal: theme.spacing.l,
-    borderRadius: theme.borderRadius.large,
-    marginBottom: theme.spacing.m,
-  },
-  testButtonText: {
-    color: 'white',
-    fontFamily: theme.fonts.body,
-    fontSize: 14,
-    textAlign: 'center',
-  },
   startButton: {
     backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.m,
@@ -201,5 +152,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-/*A effacer lorsque le test est fini*/

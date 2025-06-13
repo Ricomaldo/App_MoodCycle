@@ -10,6 +10,7 @@ import { useChatStore } from '../../stores/useChatStore';
 
 // Composants UI
 import { Heading3, BodyText, SmallText } from '../Typography';
+import PersonaSelector from './PersonaSelector';
 
 export default function DevNavigation() {
   const router = useRouter();
@@ -32,63 +33,74 @@ export default function DevNavigation() {
     chat.resetChatData();
   };
 
-  const simulateOnboardingData = () => {
-    onboarding.updateUserInfo({
-      journeyStarted: true,
-      startDate: new Date().toISOString(),
-    });
-    
-    onboarding.updateJourneyChoice({
-      selectedOption: 'nature',
-      motivation: 'Découvrir mon lien avec la nature',
-    });
-    
-    onboarding.updatePreferences({
-      symptoms: 4,
-      moods: 5,
-      phyto: 3,
-      phases: 4,
-      lithotherapy: 2,
-      rituals: 5,
-    });
-    
-    onboarding.completeOnboarding();
+  const advanceCycle = () => {
+    const currentCycle = cycle.currentCycle;
+    if (!currentCycle.startDate) {
+      // Si pas de cycle, en créer un
+      const startDate = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000); // Il y a 2 semaines
+      cycle.updateCurrentCycle({
+        startDate: startDate.toISOString(),
+        currentDay: 14,
+        currentPhase: 'ovulatory',
+        length: 28,
+      });
+    } else {
+      // Avancer de 7 jours
+      const newDay = Math.min(currentCycle.currentDay + 7, currentCycle.length || 28);
+      let newPhase = 'follicular';
+      
+      if (newDay <= 5) newPhase = 'menstrual';
+      else if (newDay <= 13) newPhase = 'follicular';
+      else if (newDay <= 17) newPhase = 'ovulatory';
+      else newPhase = 'luteal';
+      
+      cycle.updateCurrentCycle({
+        ...currentCycle,
+        currentDay: newDay,
+        currentPhase: newPhase,
+      });
+    }
   };
 
-  const simulateCycleData = () => {
-    cycle.updateCurrentCycle({
-      startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // Il y a 15 jours
-      currentDay: 15,
-      currentPhase: 'ovulatory',
-      length: 28,
-    });
-    
-    cycle.addDailyLog(new Date().toISOString().split('T')[0], {
-      mood: 'happy',
-      energy: 4,
-      symptoms: ['cramping'],
-    });
+  const resetChat = () => {
+    chat.resetChatData();
   };
 
-  const simulateChatData = () => {
-    chat.addUserMessage("Bonjour Melune !");
-    chat.addMeluneMessage("Bonjour ma belle ! Comment vous sentez-vous aujourd'hui ?", {
-      mood: 'welcoming',
+  const addTestMessages = () => {
+    const messages = [
+      { type: 'user', text: "Salut Melune ! Comment ça va ?" },
+      { type: 'melune', text: "Bonjour ma belle ! Je vais très bien, merci ! Et toi, comment te sens-tu aujourd'hui ? ✨", mood: 'welcoming' },
+      { type: 'user', text: "J'ai des crampes aujourd'hui 😔" },
+      { type: 'melune', text: "Je comprends, les crampes peuvent être difficiles. As-tu essayé une bouillotte chaude ou des tisanes anti-inflammatoires ? 🌿", mood: 'caring' },
+      { type: 'user', text: "Merci pour tes conseils !" },
+    ];
+
+    messages.forEach(msg => {
+      if (msg.type === 'user') {
+        chat.addUserMessage(msg.text);
+      } else {
+        chat.addMeluneMessage(msg.text, { mood: msg.mood });
+      }
     });
-    chat.addUserMessage("Je me sens bien, merci !");
   };
 
   return (
     <View style={styles.container}>
-      {/* Bouton pour montrer/cacher */}
-      <TouchableOpacity 
-        style={styles.toggleButton}
-        onPress={() => setIsVisible(!isVisible)}
-      >
-        <BodyText style={styles.toggleText}>
-          🛠️ DEV
-        </BodyText>
-      </TouchableOpacity>
+      {/* Boutons en ligne */}
+      <View style={styles.buttonsRow}>
+        {/* Bouton pour montrer/cacher */}
+        <TouchableOpacity 
+          style={styles.toggleButton}
+          onPress={() => setIsVisible(!isVisible)}
+        >
+          <BodyText style={styles.toggleText}>
+            🛠️ DEV
+          </BodyText>
+        </TouchableOpacity>
+
+        {/* PersonaSelector */}
+        <PersonaSelector />
+      </View>
 
       {isVisible && (
         <ScrollView style={styles.panel} showsVerticalScrollIndicator={false}>
@@ -142,21 +154,21 @@ export default function DevNavigation() {
             <BodyText style={styles.sectionTitle}>⚡ Actions de test</BodyText>
             <TouchableOpacity 
               style={styles.actionButton}
-              onPress={simulateOnboardingData}
+              onPress={advanceCycle}
             >
-              <SmallText style={styles.actionButtonText}>Simuler Onboarding</SmallText>
+              <SmallText style={styles.actionButtonText}>Avancer Cycle</SmallText>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.actionButton}
-              onPress={simulateCycleData}
+              onPress={resetChat}
             >
-              <SmallText style={styles.actionButtonText}>Simuler Cycle</SmallText>
+              <SmallText style={styles.actionButtonText}>Reset Chat</SmallText>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.actionButton}
-              onPress={simulateChatData}
+              onPress={addTestMessages}
             >
-              <SmallText style={styles.actionButtonText}>Simuler Chat</SmallText>
+              <SmallText style={styles.actionButtonText}>Test Messages</SmallText>
             </TouchableOpacity>
           </View>
 
@@ -196,7 +208,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginTop: 5,
-    maxHeight: 400,
     width: 200,
   },
   title: {
@@ -250,5 +261,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 12,
+  },
+  buttonsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 }); 

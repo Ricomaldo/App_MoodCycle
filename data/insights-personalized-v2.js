@@ -1,5 +1,6 @@
 import insights from './insights.json';
 import phases from './phases.json';
+import { getPersonalizedClosing } from './persona-closings.js';
 
 // 🎯 MAPPING Journey Options vers Journey Targets
 const JOURNEY_MAPPING = {
@@ -19,22 +20,9 @@ const getFallbackInsight = (phase, persona = null, prenom = null) => {
   
   let baseContent = fallbacks[phase] || "Belle journée à toi ! 💕";
   
-  // Personnaliser avec le prénom si disponible
+  // Format simple avec prénom
   if (prenom) {
     baseContent = `${prenom}, ${baseContent.toLowerCase()}`;
-  }
-  
-  // Si on a un persona, on peut personnaliser même le fallback
-  if (persona && persona === 'emma') {
-    return baseContent + " 🌸";
-  } else if (persona && persona === 'laure') {
-    return baseContent + " 💪";
-  } else if (persona && persona === 'clara') {
-    return baseContent + " 🧠";
-  } else if (persona && persona === 'christine') {
-    return baseContent + " 🔮";
-  } else if (persona && persona === 'sylvie') {
-    return baseContent + " 🦋";
   }
   
   return baseContent;
@@ -53,6 +41,7 @@ const enrichInsightWithContext = (baseVariant, onboardingStore, phase) => {
     // 2. Sélectionner enrichissement contextuel optimal
     const phaseData = phases[phase];
     if (!phaseData?.contextualEnrichments) {
+      // Pas d'enrichissement disponible, utiliser format simple
       return prenom ? `${prenom}, ${baseVariant}` : baseVariant;
     }
 
@@ -67,7 +56,7 @@ const enrichInsightWithContext = (baseVariant, onboardingStore, phase) => {
 
     // 3. Scorer les enrichissements contextuels
     const scoredEnrichments = candidateEnrichments.map(enrichment => {
-      let score = 50; // Score de base
+      let score = 50;
 
       // Bonus préférences élevées (>=4)
       if (enrichment.targetPreferences && preferences) {
@@ -79,56 +68,45 @@ const enrichInsightWithContext = (baseVariant, onboardingStore, phase) => {
           strongPreferences.includes(pref)
         ).length;
         
-        score += matchingPrefs * 25; // Bonus fort pour préférences
+        score += matchingPrefs * 25;
       }
 
       // Bonus journey matching
       const mappedJourney = JOURNEY_MAPPING[journeyChoice];
       if (enrichment.targetJourney === mappedJourney) {
-        score += 30; // Bonus important pour journey match
+        score += 30;
       }
 
       // Bonus tone matching
       if (enrichment.tone === communicationTone) {
-        score += 20; // Bonus modéré pour tone
+        score += 20;
       }
 
-      return {
-        ...enrichment,
-        contextScore: score
-      };
+      return { ...enrichment, contextScore: score };
     });
 
     // Trier par score décroissant et sélectionner le meilleur
     scoredEnrichments.sort((a, b) => b.contextScore - a.contextScore);
     const selectedEnrichment = scoredEnrichments[0];
 
-    // 4. Composer message enrichi niveau sophistication onboarding
+    // 4. VRAIE FORMULE : contextualText + ", " + prénom + insight + personaClosings
+    const contextualText = selectedEnrichment.contextualText;
+    const cleanedInsight = cleanContentEmojis(baseVariant);
+    
     let enrichedMessage = '';
     
-    // Ajouter prénom + contexte d'ouverture si disponible
-    if (prenom && selectedEnrichment) {
-      enrichedMessage = `${prenom}, ${selectedEnrichment.contextualText} 💜 `;
+    if (contextualText && prenom) {
+      enrichedMessage = `${contextualText}, ${prenom} ${cleanedInsight}`;
     } else if (prenom) {
-      enrichedMessage = `${prenom}, `;
-    } else if (selectedEnrichment) {
-      enrichedMessage = `${selectedEnrichment.contextualText} 💜 `;
+      enrichedMessage = `${prenom}, ${cleanedInsight}`;
+    } else {
+      enrichedMessage = cleanedInsight;
     }
 
-    // Ajouter le contenu de base
-    enrichedMessage += baseVariant;
-
-    // Ajouter une conclusion personnalisée selon persona
-    const personaClosings = {
-      emma: " Je t'accompagne dans cette découverte 🌸",
-      laure: " Continue d'optimiser ton bien-être 💪", 
-      sylvie: " Accueille cette transformation avec douceur 🦋",
-      christine: " Laisse ta sagesse intérieure te guider 🔮",
-      clara: " Analyse et adapte selon tes observations 🧠"
-    };
-
-    if (assignedPersona && personaClosings[assignedPersona]) {
-      enrichedMessage += personaClosings[assignedPersona];
+    // Ajouter conclusion persona personnalisée selon journey
+    const personalizedClosing = getPersonalizedClosing(assignedPersona, journeyChoice);
+    if (personalizedClosing) {
+      enrichedMessage += ` ${personalizedClosing}`;
     }
 
     return enrichedMessage;
@@ -137,6 +115,23 @@ const enrichInsightWithContext = (baseVariant, onboardingStore, phase) => {
     console.warn('🚨 Erreur enrichissement contextuel:', error);
     return prenom ? `${prenom}, ${baseVariant}` : baseVariant;
   }
+};
+
+// 🎯 FONCTION : Nettoyer les emojis en doublon
+const cleanContentEmojis = (content) => {
+  if (!content) return content;
+  
+  // Supprimer emojis contextuels génériques en doublon
+  let cleaned = content
+    .replace(/💜\s*/, '') // Supprimer coeur violet contextuel
+    .replace(/✨\s*✨/g, '✨') // Dédupliquer étoiles
+    .replace(/🌸\s*🌸/g, '🌸') // Dédupliquer fleurs
+    .replace(/💪\s*💪/g, '💪'); // Dédupliquer muscle
+  
+  // Nettoyer espaces multiples créés par suppression
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  
+  return cleaned;
 };
 
 // 🎯 Sélectionner le contenu approprié selon persona (MODIFIÉ)
@@ -367,10 +362,10 @@ export const testContextualEnrichment = (phase, persona, mockStore = null) => {
   
   if (!baseVariant) return null;
 
-  return {
-    original: baseVariant,
-    enriched: enrichInsightWithContext(baseVariant, testStore, phase),
-    store: testStore,
-    phase: phase
-  };
-}; 
+      return {
+      original: baseVariant,
+      enriched: enrichInsightWithContext(baseVariant, testStore, phase),
+      store: testStore,
+      phase: phase
+    };
+  }; 

@@ -3,13 +3,17 @@ import { View, StyleSheet } from 'react-native';
 import { BodyText } from '../Typography';
 import { theme } from '../../config/theme';
 
-export default function ChatBubble({ message, isUser = false }) {
+export default function ChatBubble({ message, isUser = false, phase = 'menstrual' }) {
+  // Calcul dynamique des couleurs pour les bulles de Melune selon la phase
+  const phaseColor = theme.colors.phases[phase];
+  const textColor = theme.getTextColorOn(phaseColor);
+  
   return (
     <View style={[
       styles.container,
-      isUser ? styles.userBubble : styles.meluneBubble
+      isUser ? styles.userBubble : [styles.meluneBubble, { backgroundColor: phaseColor }]
     ]}>
-      <BodyText style={isUser ? styles.userText : styles.meluneText}>
+      <BodyText style={isUser ? styles.userText : [styles.meluneText, { color: textColor }]}>
         {message}
       </BodyText>
     </View>
