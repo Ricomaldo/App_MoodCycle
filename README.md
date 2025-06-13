@@ -9,9 +9,11 @@ MoodCycle est une application React Native qui accompagne les femmes dans la com
 - 🗣️ **Chat conversationnel avec Melune** - IA personnalisée pour conseils et support
 - 📊 **Roue du cycle interactive** - Visualisation intuitive des phases menstruelles  
 - 📝 **Carnet personnel** - Journal intime et notes quotidiennes
-- 🎯 **Insights personnalisés** - Recommandations basées sur les données
-- 🌙 **Onboarding conversationnel** - 7 écrans d'introduction avec Melune
+- 🎯 **Insights personnalisés V2** - Recommandations basées sur 5 personas (Emma, Laure, Sylvie, Christine, Clara)
+- 🤖 **Système de personas intelligent** - Mapping automatique selon âge, préférences et communication
+- 🌙 **Onboarding conversationnel** - 7 écrans d'introduction avec Melune incluant sélection d'âge
 - 🔄 **Sync multi-appareils** - Données disponibles partout, même hors ligne
+- 🧪 **Interfaces de debug** - Outils de développement pour personas et insights
 
 ## 🏗️ Architecture Technologique
 
@@ -48,10 +50,11 @@ MoodCycle/
 ├── app/                           # 🚀 Expo Router (Routes)
 │   ├── _layout.jsx               # Layout racine + Providers
 │   ├── index.jsx                 # Redirection vers tabs
-│   ├── onboarding/               # Flow conversationnel Melune (7 écrans)
+│   ├── onboarding/               # Flow conversationnel Melune (8 écrans)
 │   │   ├── 100-promesse.jsx     # Promesse confidentialité
 │   │   ├── 200-rencontre.jsx    # Première rencontre Melune
 │   │   ├── 300-confiance.jsx    # Établir confiance
+│   │   ├── 375-age.jsx          # Sélection tranche d'âge (5 choix)
 │   │   ├── 400-cycle.jsx        # Conversation cycle
 │   │   ├── 500-preferences.jsx  # Préférences conseils
 │   │   ├── 600-avatar.jsx       # Personnalisation Melune
@@ -65,7 +68,7 @@ MoodCycle/
 │   ├── useUserStore.js           # Profil utilisateur + préférences
 │   ├── useCycleStore.js          # Données cycle + phases
 │   ├── useChatStore.js           # Historique conversations Melune
-│   ├── useOnboardingStore.js     # Migration OnboardingContext
+│   ├── useOnboardingStore.js     # Gestion onboarding + système personas
 │   └── useAppStore.js            # État global app
 ├── services/                      # 🔌 Services & API
 │   ├── supabase.js               # Configuration client Supabase
@@ -89,14 +92,16 @@ MoodCycle/
 │   └── useCycleData.js          # Hook données cycle
 ├── utils/                         # 🛠️ Utilitaires
 │   ├── dateUtils.js             # Gestion dates cycle
+│   ├── personaCalculator.js     # Algorithme de calcul personas
 │   └── colors.js                # Palette couleurs
 ├── data/                          # 📊 Données Statiques
 │   ├── phases.json              # Définitions phases cycle
-│   └── insights.js              # Templates insights
+│   ├── insights.json            # Templates insights avec personas
+│   ├── insights-personalized.js # Moteur insights V1 (legacy)
+│   └── insights-personalized-v2.js # Moteur insights V2 avec personas
 ├── constants/                     # 📏 Constantes
 ├── config/                        # ⚙️ Configuration
-├── contexts/                      # ⚠️ Migration vers stores/ en cours
-│   └── OnboardingContext.jsx    # À migrer vers Zustand
+│   └── personaProfiles.js        # Profils des 5 personas de référence
 └── assets/                        # 🎭 Ressources
     ├── fonts/                    # Quintessential + Quicksand
     └── images/melune/           # Avatars Melune
@@ -143,12 +148,15 @@ MoodCycle/
 - [x] Flow onboarding conversationnel (7 écrans)
 - [x] Chat interface avec input optimisé
 
-### 🔄 Phase 2 - State Management (En cours)
+### ✅ Phase 2 - State Management (Terminée)
 - [x] Installation Zustand + TanStack Query + NetInfo
 - [x] Architecture offline-first définie
-- [ ] Migration OnboardingContext vers useOnboardingStore
-- [ ] Création stores Zustand pour cycle/chat/user
-- [ ] Configuration TanStack Query Provider
+- [x] Migration OnboardingContext vers useOnboardingStore
+- [x] Système de personas intelligent (5 profils : Emma, Laure, Sylvie, Christine, Clara)
+- [x] Algorithme de mapping automatique (âge + préférences + communication)
+- [x] Insights personnalisés V2 avec variants par persona
+- [x] Interfaces de debug complètes (/debug/persona et /debug/insights-v2)
+- [x] Écran sélection d'âge dans onboarding (375-age.jsx)
 
 ### 🎯 Phase 3 - Backend Supabase (Prochaine)
 - [ ] Configuration projet Supabase + schéma BDD
@@ -159,8 +167,8 @@ MoodCycle/
 
 ### 🚀 Phase 4 - Fonctionnalités Avancées
 - [ ] Calculs prédictifs cycle + ovulation
-- [ ] IA conversationnelle Melune avancée
-- [ ] Insights personnalisés + recommandations
+- [ ] IA conversationnelle Melune avancée (GPT-4 integration)
+- [x] Insights personnalisés + recommandations (V2 avec personas)
 - [ ] Export données + rapports
 - [ ] Notifications push intelligentes
 

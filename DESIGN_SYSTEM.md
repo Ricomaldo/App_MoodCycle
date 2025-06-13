@@ -11,7 +11,7 @@ MoodCycle utilise un Design System centré sur les **phases du cycle menstruel**
 ### Palette principale
 ```js
 colors: {
-  primary: '#E91E63',      // Framboise Chaleureuse  
+  primary: '#D81B60',      // Framboise Chaleureuse  
   secondary: '#CDDC39',    // Citron Vert Velouté
   background: '#FAFAFA',   // Brume d'Aube (fond)
   text: '#212121',         // Texte principal

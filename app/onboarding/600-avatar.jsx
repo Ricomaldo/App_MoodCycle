@@ -62,9 +62,9 @@ export default function AvatarScreen() {
   const insets = useSafeAreaInsets();
   const { preferences, updateMelune, calculateMelunePersonality } = useOnboardingStore();
   
-  const [selectedAvatarStyle, setSelectedAvatarStyle] = useState('classic');
-  const [selectedTone, setSelectedTone] = useState('friendly');
-  const [step, setStep] = useState(1); // 1: avatar, 2: ton, 3: aperçu
+  const [selectedAvatarStyle, setSelectedAvatarStyle] = useState(null);
+  const [selectedTone, setSelectedTone] = useState(null);
+  const [step, setStep] = useState(1); // 1: avatar sélection, 2: avatar confirmation, 3: ton sélection, 4: ton confirmation, 5: aperçu final
   
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -87,28 +87,36 @@ export default function AvatarScreen() {
 
   const handleAvatarStyleSelect = (style) => {
     setSelectedAvatarStyle(style);
-    setTimeout(() => {
-      setStep(2);
-    }, 500);
+    if (step === 1) {
+      setStep(2); // Passer à la confirmation avatar
+    }
   };
 
   const handleToneSelect = (tone) => {
     setSelectedTone(tone);
-    setTimeout(() => {
-      setStep(3);
-    }, 500);
+    if (step === 3) {
+      setStep(4); // Passer à la confirmation ton
+    }
   };
 
   const handleContinue = () => {
-    // Sauvegarder les choix
-    updateMelune({
-      avatarStyle: selectedAvatarStyle,
-      communicationTone: selectedTone
-    });
-    
-    setTimeout(() => {
-      router.push('/onboarding/700-paywall');
-    }, 300);
+    if (step === 2) {
+      // Confirmer le choix d'avatar et passer au ton
+      setStep(3);
+    } else if (step === 4) {
+      // Confirmer le choix de ton et passer à l'aperçu
+      setStep(5);
+    } else if (step === 5) {
+      // Sauvegarder et continuer
+      updateMelune({
+        avatarStyle: selectedAvatarStyle,
+        communicationTone: selectedTone
+      });
+      
+      setTimeout(() => {
+        router.push('/onboarding/700-paywall');
+      }, 300);
+    }
   };
 
   const getMeluneMessage = () => {
@@ -116,8 +124,20 @@ export default function AvatarScreen() {
       case 1:
         return "Sous quelle forme veux-tu me voir ? Choisis le style qui résonne le plus avec toi 💜";
       case 2:
-        return "Parfait ! Maintenant, comment préfères-tu que je communique avec toi ?";
+        if (selectedAvatarStyle) {
+          const styleData = AVATAR_STYLES.find(s => s.key === selectedAvatarStyle);
+          return `Parfait ! Le style ${styleData.label.toLowerCase()} te correspond bien. ${styleData.description} ✨`;
+        }
+        return "Comment te sens-tu avec ce style d'avatar ?";
       case 3:
+        return "Maintenant, comment préfères-tu que je communique avec toi ?";
+      case 4:
+        if (selectedTone) {
+          const toneData = COMMUNICATION_TONES.find(t => t.key === selectedTone);
+          return `Excellente ! Une communication ${toneData.label.toLowerCase()}, ${toneData.description.toLowerCase()}. C'est noté ! 💜`;
+        }
+        return "Comment te sens-tu avec ce ton de communication ?";
+      case 5:
         return getPreviewMessage();
       default:
         return "Personnalisons notre relation !";
@@ -132,14 +152,29 @@ export default function AvatarScreen() {
   const getContinueText = () => {
     switch (step) {
       case 1:
-        return "Choisir un style";
+        return selectedAvatarStyle ? "Confirmer ce style" : "Choisir un style";
       case 2:
-        return "Choisir un ton";
+        return "Choisir mon ton de communication";
       case 3:
+        return selectedTone ? "Confirmer ce ton" : "Choisir un ton";
+      case 4:
+        return "Voir l'aperçu final";
+      case 5:
         return "C'est parfait !";
       default:
         return "Continuer";
     }
+  };
+
+  const canContinue = () => {
+    if (step === 1 || step === 2) {
+      return selectedAvatarStyle !== null;
+    } else if (step === 3 || step === 4) {
+      return selectedTone !== null;
+    } else if (step === 5) {
+      return selectedAvatarStyle !== null && selectedTone !== null;
+    }
+    return false;
   };
 
   return (
@@ -152,11 +187,11 @@ export default function AvatarScreen() {
           {/* Avatar Melune avec style sélectionné */}
           <View style={styles.avatarContainer}>
             <MeluneAvatar 
-              phase="ovulation" 
+              phase="ovulatory" 
               size="large" 
-              style={selectedAvatarStyle}
+              style={selectedAvatarStyle || 'classic'}
             />
-            {step >= 2 && (
+            {selectedAvatarStyle && step >= 2 && (
               <View style={styles.avatarBadge}>
                 <BodyText style={styles.avatarBadgeText}>
                   {AVATAR_STYLES.find(s => s.key === selectedAvatarStyle)?.label}
@@ -192,6 +227,9 @@ export default function AvatarScreen() {
             {/* Étape 1: Choix du style d'avatar */}
             {step === 1 && (
               <View style={styles.optionsContainer}>
+                <BodyText style={styles.helpText}>
+                  Observe l'avatar ci-dessus changer selon ton choix
+                </BodyText>
                 {AVATAR_STYLES.map((style) => (
                   <TouchableOpacity
                     key={style.key}
@@ -214,13 +252,44 @@ export default function AvatarScreen() {
                     <BodyText style={styles.optionDescription}>
                       {style.description}
                     </BodyText>
+                    {selectedAvatarStyle === style.key && (
+                      <View style={styles.selectedIndicator}>
+                        <BodyText style={styles.selectedIcon}>✓</BodyText>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 ))}
               </View>
             )}
 
-            {/* Étape 2: Choix du ton de communication */}
-            {step === 2 && (
+            {/* Étape 2: Confirmation du style d'avatar */}
+            {step === 2 && selectedAvatarStyle && (
+              <View style={styles.summaryContainer}>
+                <BodyText style={styles.summaryTitle}>Tu as choisi</BodyText>
+                {(() => {
+                  const styleData = AVATAR_STYLES.find(s => s.key === selectedAvatarStyle);
+                  return (
+                    <View style={styles.summaryItem}>
+                      <BodyText style={[styles.summaryIcon, { color: styleData.color }]}>
+                        {styleData.icon}
+                      </BodyText>
+                      <View style={styles.summaryTexts}>
+                        <BodyText style={styles.summaryLabel}>Style d'avatar:</BodyText>
+                        <BodyText style={[styles.summaryValue, { color: styleData.color }]}>
+                          {styleData.label}
+                        </BodyText>
+                        <BodyText style={styles.summaryDescription}>
+                          {styleData.description}
+                        </BodyText>
+                      </View>
+                    </View>
+                  );
+                })()}
+              </View>
+            )}
+
+            {/* Étape 3: Choix du ton de communication */}
+            {step === 3 && (
               <View style={styles.optionsContainer}>
                 {COMMUNICATION_TONES.map((tone) => (
                   <TouchableOpacity
@@ -243,13 +312,53 @@ export default function AvatarScreen() {
                     <BodyText style={styles.optionDescription}>
                       {tone.description}
                     </BodyText>
+                    {selectedTone === tone.key && (
+                      <View style={styles.selectedIndicator}>
+                        <BodyText style={styles.selectedIcon}>✓</BodyText>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 ))}
               </View>
             )}
 
-            {/* Étape 3: Aperçu final */}
-            {step === 3 && (
+            {/* Étape 4: Confirmation du ton */}
+            {step === 4 && selectedTone && (
+              <View style={styles.summaryContainer}>
+                <BodyText style={styles.summaryTitle}>Tu as choisi</BodyText>
+                {(() => {
+                  const toneData = COMMUNICATION_TONES.find(t => t.key === selectedTone);
+                  return (
+                    <View style={styles.summaryItem}>
+                      <BodyText style={styles.summaryIcon}>
+                        {toneData.icon}
+                      </BodyText>
+                      <View style={styles.summaryTexts}>
+                        <BodyText style={styles.summaryLabel}>Ton de communication:</BodyText>
+                        <BodyText style={styles.summaryValue}>
+                          {toneData.label}
+                        </BodyText>
+                        <BodyText style={styles.summaryDescription}>
+                          {toneData.description}
+                        </BodyText>
+                      </View>
+                    </View>
+                  );
+                })()}
+                
+                <View style={styles.exampleContainer}>
+                  <BodyText style={styles.exampleLabel}>Exemple de message:</BodyText>
+                  <View style={styles.exampleBubble}>
+                    <BodyText style={styles.exampleText}>
+                      {COMMUNICATION_TONES.find(t => t.key === selectedTone)?.example}
+                    </BodyText>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {/* Étape 5: Aperçu final */}
+            {step === 5 && (
               <View style={styles.previewContainer}>
                 <BodyText style={styles.previewTitle}>Aperçu de notre relation</BodyText>
                 
@@ -291,7 +400,7 @@ export default function AvatarScreen() {
           </Animated.View>
 
           {/* Bouton de continuation */}
-          {step === 3 && (
+          {canContinue() && (
             <TouchableOpacity 
               style={styles.continueButton} 
               onPress={handleContinue}
@@ -351,6 +460,14 @@ const styles = StyleSheet.create({
   optionsContainer: {
     gap: theme.spacing.m,
   },
+  helpText: {
+    textAlign: 'center',
+    color: theme.colors.textLight,
+    fontSize: 14,
+    fontStyle: 'italic',
+    lineHeight: 20,
+    marginBottom: theme.spacing.l,
+  },
   optionCard: {
     backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.medium,
@@ -391,6 +508,66 @@ const styles = StyleSheet.create({
     color: theme.colors.textLight,
     fontStyle: 'italic',
     lineHeight: 20,
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    top: theme.spacing.s,
+    right: theme.spacing.s,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: theme.colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedIcon: {
+    color: theme.getTextColorOn(theme.colors.primary),
+    fontSize: 14,
+    fontFamily: theme.fonts.bodyBold,
+  },
+
+  // Styles du résumé (comme dans l'écran âge)
+  summaryContainer: {
+    backgroundColor: theme.colors.primary + '10',
+    borderRadius: theme.borderRadius.medium,
+    padding: theme.spacing.l,
+    borderLeftWidth: 4,
+    borderLeftColor: theme.colors.primary,
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontFamily: theme.fonts.bodyBold,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.m,
+    textAlign: 'center',
+  },
+  summaryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.m,
+  },
+  summaryIcon: {
+    fontSize: 24,
+    marginRight: theme.spacing.m,
+  },
+  summaryTexts: {
+    flex: 1,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+  },
+  summaryValue: {
+    fontSize: 16,
+    fontFamily: theme.fonts.bodyBold,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.xs,
+  },
+  summaryDescription: {
+    fontSize: 13,
+    color: theme.colors.textLight,
+    fontStyle: 'italic',
   },
 
   // Styles de l'aperçu

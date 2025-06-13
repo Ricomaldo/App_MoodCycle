@@ -8,6 +8,8 @@ import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
 
+// 🌟 NOUVEAU : Import du système d'enrichissement contextuel unifié
+import { enrichInsightWithContext } from '../../data/insights-personalized-v2';
 
 export default function CadeauScreen() {
   const router = useRouter();
@@ -75,9 +77,8 @@ export default function CadeauScreen() {
   };
 
   const generatePersonalizedInsight = () => {
-    const journeyChoice = useOnboardingStore.getState().journeyChoice;
-    const cycleData = useOnboardingStore.getState().cycleData;
-    // preferences et melune sont déjà dans le scope de la fonction
+    const onboardingData = useOnboardingStore.getState();
+    const { journeyChoice, cycleData, preferences, melune } = onboardingData;
     
     // Calculer la phase estimée du cycle
     const estimatedPhase = calculateCurrentPhase(cycleData);
@@ -106,10 +107,11 @@ export default function CadeauScreen() {
     // Ajouter des conseils basés sur les préférences fortes
     const preferencesAdvice = getPreferencesAdvice(strongPreferences);
     
-    // Personnaliser selon le ton de communication choisi
-    const tone = melune?.communicationTone || 'friendly';
+    // 🌟 NOUVEAU : Utiliser le système d'enrichissement contextuel unifié
+    const combinedMessage = `${baseMessage}. ${phaseMessage}. ${preferencesAdvice}`;
     
-    return formatInsightMessage(baseMessage, phaseMessage, preferencesAdvice, tone);
+    // Utiliser enrichInsightWithContext au lieu de formatInsightMessage
+    return enrichInsightWithContext(combinedMessage, onboardingData, estimatedPhase);
   };
 
   const calculateCurrentPhase = (cycleData) => {
@@ -159,17 +161,7 @@ export default function CadeauScreen() {
     }
   };
 
-  const formatInsightMessage = (base, phase, advice, tone) => {
-    const nom = userInfo.prenom || 'belle âme';
-    
-    if (tone === 'professional') {
-      return `${nom}, ${base}. D'après ton profil, ${phase.toLowerCase()}. ${advice}.`;
-    } else if (tone === 'inspiring') {
-      return `${nom}, ${base} ✨ ${phase}, et c'est magnifique ! ${advice}. Tu es une déesse en devenir ! 🌙`;
-    } else { // friendly
-      return `${nom}, ${base} 💜 ${phase}. ${advice}. J'ai hâte de partager ce voyage avec toi ! 🌸`;
-    }
-  };
+  // 🗑️ SUPPRIMÉ : formatInsightMessage remplacé par le système d'enrichissement contextuel unifié
 
   const handleComplete = () => {
     console.log('🎯 Finalisation onboarding...');

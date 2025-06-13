@@ -1,13 +1,21 @@
-// config/theme.js
 import { StyleSheet } from 'react-native';
 
 export const theme = {
     colors: {
-      primary: '#E91E63',      // Framboise Chaleureuse
+      primary: '#D81B60',      // Framboise Chaleureuse
       secondary: '#CDDC39',    // Citron Vert Velouté
       background: '#FAFAFA',   // Brume d'Aube (fond)
       text: '#212121',         // Texte principal
       textLight: '#757575',    // Texte secondaire
+      textPrimary: '#212121',  // Alias pour compatibilité
+      textSecondary: '#757575', // Alias pour compatibilité
+      surface: '#FFFFFF',      // Surface cards
+      border: '#E0E0E0',       // Bordures
+      white: '#FFFFFF',        // Blanc pur
+      success: '#4CAF50',      // Vert succès
+      warning: '#FF9800',      // Orange warning
+      error: '#F44336',        // Rouge erreur
+      backgroundSecondary: '#F5F5F5', // Fond secondaire
       phases: {
         menstrual: '#F44336',  // Grenat Doux
         follicular: '#FFC107', // Miel Doré
@@ -24,7 +32,7 @@ export const theme = {
       heading1: {
         fontFamily: 'Quintessential_400Regular',
         fontSize: 24,
-        fontWeight: 'normal', // Pas de bold disponible
+        fontWeight: 'normal',
       },
       heading2: {
         fontFamily: 'Quintessential_400Regular', 
@@ -34,17 +42,29 @@ export const theme = {
       heading3: {
         fontFamily: 'Quicksand_700Bold',
         fontSize: 16,
-        fontWeight: 'normal', // Le poids est dans le nom de la police
+        fontWeight: 'normal',
+      },
+      h3: { // Alias pour compatibilité
+        fontSize: 16,
+        fontWeight: '600',
       },
       body: {
         fontFamily: 'Quicksand_400Regular',
-        fontSize: 14,
+        fontSize: 16,
+        fontWeight: 'normal',
+      },
+      caption: { // Ajout pour compatibilité
+        fontSize: 12,
         fontWeight: 'normal',
       },
       small: {
         fontFamily: 'Quicksand_400Regular',
         fontSize: 10,
         fontWeight: 'normal',
+      },
+      conversational: { // Nouveau style
+        fontSize: 18,
+        lineHeight: 24,
       },
       // Tailles pour compatibilité avec l'existant
       heading1Size: 24,
@@ -56,14 +76,19 @@ export const theme = {
     spacing: {
       xs: 4,
       s: 8,
+      sm: 8,    // Alias pour compatibilité
       m: 16,
+      md: 16,   // Alias pour compatibilité
       l: 24,
+      lg: 24,   // Alias pour compatibilité
       xl: 32,
       xxl: 48
     },
     borderRadius: {
       small: 8,
+      sm: 8,     // Alias pour compatibilité
       medium: 16,
+      md: 16,    // Alias pour compatibilité
       large: 24,
       pill: 999,
     },
@@ -109,5 +134,4 @@ export const theme = {
   export const createStyles = (styleFunction) => {
     const styles = StyleSheet.create(styleFunction(theme));
     return styles;
-  };
-  
+  }; 

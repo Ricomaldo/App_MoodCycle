@@ -9,6 +9,7 @@ const ONBOARDING_SCREENS = [
   { id: '100-promesse', path: '/onboarding/100-promesse', label: '1. Promesse' },
   { id: '200-rencontre', path: '/onboarding/200-rencontre', label: '2. Rencontre' },
   { id: '300-confiance', path: '/onboarding/300-confiance', label: '3. Confiance' },
+  { id: '375-age', path: '/onboarding/375-age', label: '3.5. Âge' },
   { id: '400-cycle', path: '/onboarding/400-cycle', label: '4. Cycle' },
   { id: '500-preferences', path: '/onboarding/500-preferences', label: '5. Préférences' },
   { id: '600-avatar', path: '/onboarding/600-avatar', label: '6. Avatar' },
@@ -79,6 +80,22 @@ export default function DevNavigation({ currentScreen }) {
           {nextScreen ? 'Suivant →' : 'App →'}
         </BodyText>
       </TouchableOpacity>
+
+      {/* Bouton Debug Persona (si on a des données) */}
+      <TouchableOpacity 
+        style={[styles.devButton, styles.debugButton]}
+        onPress={() => router.push('/debug/persona')}
+      >
+        <BodyText style={styles.devButtonText}>🎭</BodyText>
+      </TouchableOpacity>
+
+      {/* Bouton Debug Insights V2 */}
+      <TouchableOpacity 
+        style={[styles.devButton, styles.debugButton]}
+        onPress={() => router.push('/debug/insights-v2')}
+      >
+        <BodyText style={styles.devButtonText}>🧪</BodyText>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -120,5 +137,9 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.bodyBold,
     textAlign: 'center',
     flex: 1,
+  },
+  debugButton: {
+    minWidth: 40,
+    marginLeft: theme.spacing.xs,
   },
 }); 

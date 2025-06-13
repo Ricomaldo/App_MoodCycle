@@ -30,7 +30,7 @@ export default function ConfidenceScreen() {
     updateUserInfo({ trustGranted: true, trustDate: new Date().toISOString() });
     
     setTimeout(() => {
-      router.push('/onboarding/400-cycle');
+      router.push('/onboarding/375-age');
     }, 300);
   };
 

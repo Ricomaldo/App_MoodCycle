@@ -28,7 +28,41 @@
       "affirmation": "Je m'accorde le droit de ralentir et d'écouter mon corps.",
       "symbol": "🌙",
       "element": "Eau",
-      "archetype": "La Sage"
+      "archetype": "La Sage",
+      "contextualEnrichments": [
+        {
+          "id": "menstrual_emma_symptoms_body_disconnect_01",
+          "targetPersona": "emma",
+          "targetPreferences": ["symptoms"],
+          "targetJourney": "body_disconnect", 
+          "tone": "friendly",
+          "contextualText": "Ce moment sacré où ton corps te reconnecte à ton essence profonde et t'invite à ralentir"
+        },
+        {
+          "id": "menstrual_laure_phases_emotional_control_01",
+          "targetPersona": "laure", 
+          "targetPreferences": ["phases"],
+          "targetJourney": "emotional_control",
+          "tone": "professional",
+          "contextualText": "Cette phase stratégique t'enseigne la maîtrise de tes rythmes naturels pour optimiser ton énergie"
+        },
+        {
+          "id": "menstrual_sylvie_wellbeing_hiding_nature_01",
+          "targetPersona": "sylvie",
+          "targetPreferences": ["wellbeing"],
+          "targetJourney": "hiding_nature",
+          "tone": "inspiring",
+          "contextualText": "Transforme cette période en opportunité d'acceptation et de célébration de ta nature cyclique"
+        },
+        {
+          "id": "menstrual_christine_tracking_body_disconnect_01",
+          "targetPersona": "christine",
+          "targetPreferences": ["tracking"],
+          "targetJourney": "body_disconnect",
+          "tone": "friendly",
+          "contextualText": "Observer ces signaux t'aide à mieux comprendre et honorer les besoins de ton corps"
+        }
+      ]
     },
     "follicular": {
       "id": "follicular",
@@ -59,7 +93,41 @@
       "affirmation": "Je grandis et j'explore avec confiance mes nouveaux possibles.",
       "symbol": "🌱",
       "element": "Air", 
-      "archetype": "L'Exploratrice"
+      "archetype": "L'Exploratrice",
+      "contextualEnrichments": [
+        {
+          "id": "follicular_clara_phases_hiding_nature_01",
+          "targetPersona": "clara",
+          "targetPreferences": ["phases"],
+          "targetJourney": "hiding_nature",
+          "tone": "inspiring",
+          "contextualText": "Cette renaissance naturelle révèle la beauté authentique de tes cycles féminins"
+        },
+        {
+          "id": "follicular_emma_symptoms_emotional_control_01",
+          "targetPersona": "emma",
+          "targetPreferences": ["symptoms"],
+          "targetJourney": "emotional_control",
+          "tone": "friendly",
+          "contextualText": "Profite de cette montée d'énergie pour canaliser positivement tes émotions"
+        },
+        {
+          "id": "follicular_laure_tracking_body_disconnect_01",
+          "targetPersona": "laure",
+          "targetPreferences": ["tracking"],
+          "targetJourney": "body_disconnect",
+          "tone": "professional",
+          "contextualText": "Analyser cette progression énergétique optimise ta planification personnelle et professionnelle"
+        },
+        {
+          "id": "follicular_sylvie_wellbeing_hiding_nature_01",
+          "targetPersona": "sylvie",
+          "targetPreferences": ["wellbeing"],
+          "targetJourney": "hiding_nature",
+          "tone": "friendly",
+          "contextualText": "Célèbre cette période de renouveau où ta nature cyclique devient ta plus grande force"
+        }
+      ]
     },
     "ovulatory": {
       "id": "ovulatory",
@@ -90,7 +158,41 @@
       "affirmation": "Je rayonne ma lumière intérieure et j'ose briller pleinement.",
       "symbol": "☀️",
       "element": "Feu",
-      "archetype": "La Déesse"
+      "archetype": "La Déesse",
+      "contextualEnrichments": [
+        {
+          "id": "ovulatory_christine_wellbeing_emotional_control_01",
+          "targetPersona": "christine",
+          "targetPreferences": ["wellbeing"],
+          "targetJourney": "emotional_control",
+          "tone": "inspiring",
+          "contextualText": "Harness cette puissance émotionnelle pour diriger avec compassion et assertivité"
+        },
+        {
+          "id": "ovulatory_emma_phases_body_disconnect_01",
+          "targetPersona": "emma",
+          "targetPreferences": ["phases"],
+          "targetJourney": "body_disconnect",
+          "tone": "friendly",
+          "contextualText": "Ressens cette connexion profonde entre ton corps énergisé et ton être authentique"
+        },
+        {
+          "id": "ovulatory_laure_symptoms_hiding_nature_01",
+          "targetPersona": "laure",
+          "targetPreferences": ["symptoms"],
+          "targetJourney": "hiding_nature",
+          "tone": "professional",
+          "contextualText": "Cette phase démontre l'intelligence remarquable de tes cycles biologiques naturels"
+        },
+        {
+          "id": "ovulatory_clara_tracking_emotional_control_01",
+          "targetPersona": "clara",
+          "targetPreferences": ["tracking"],
+          "targetJourney": "emotional_control",
+          "tone": "inspiring",
+          "contextualText": "Observe comment cette énergie maximale te permet de maîtriser parfaitement tes interactions"
+        }
+      ]
     },
     "luteal": {
       "id": "luteal", 
@@ -121,6 +223,40 @@
       "affirmation": "Je fais confiance à mon intuition et j'honore mes limites.",
       "symbol": "🔮",
       "element": "Terre",
-      "archetype": "La Prêtresse"
+      "archetype": "La Prêtresse",
+      "contextualEnrichments": [
+        {
+          "id": "luteal_sylvie_tracking_hiding_nature_01",
+          "targetPersona": "sylvie",
+          "targetPreferences": ["tracking"],
+          "targetJourney": "hiding_nature",
+          "tone": "inspiring",
+          "contextualText": "Cette sensibilité accrue révèle la sagesse profonde de tes rythmes féminins naturels"
+        },
+        {
+          "id": "luteal_clara_symptoms_body_disconnect_01",
+          "targetPersona": "clara",
+          "targetPreferences": ["symptoms"],
+          "targetJourney": "body_disconnect",
+          "tone": "friendly",
+          "contextualText": "Ces signaux t'invitent à reconnecter avec les besoins authentiques de ton corps"
+        },
+        {
+          "id": "luteal_christine_phases_emotional_control_01",
+          "targetPersona": "christine",
+          "targetPreferences": ["phases"],
+          "targetJourney": "emotional_control",
+          "tone": "professional",
+          "contextualText": "Maîtrise cette période de transition pour développer ton intelligence émotionnelle"
+        },
+        {
+          "id": "luteal_emma_wellbeing_hiding_nature_01",
+          "targetPersona": "emma",
+          "targetPreferences": ["wellbeing"],
+          "targetJourney": "hiding_nature",
+          "tone": "inspiring",
+          "contextualText": "Embrasse cette phase comme un cadeau précieux de ta nature cyclique féminine"
+        }
+      ]
     }
   }

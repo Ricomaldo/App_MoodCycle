@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { calculateAndAssignPersona } from '../utils/personaCalculator.js';
 
 // État initial des données d'onboarding
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
     startDate: null,
     prenom: null,
     prenomCollectedAt: null,
+    ageRange: null, // '18-25', '26-35', '36-45', '46-55', '55+'
   },
   
   // Gestion des insights vus (anti-répétition)
@@ -52,6 +54,16 @@ const initialState = {
     message: '',
     category: null,     // 'cycle', 'wellbeing', 'self-discovery'
     unlocked: false,
+  },
+
+  // 🎭 PERSONA ASSIGNÉ (Nouveau système)
+  persona: {
+    assigned: null,           // 'emma', 'laure', 'sylvie', 'christine', 'clara'
+    scores: {},              // Scores calculés pour debug
+    confidence: 0,           // Confiance de l'assignation (0-1)
+    confidenceLevel: null,   // 'low', 'medium', 'high'
+    lastCalculated: null,    // Timestamp dernier calcul
+    metadata: null,          // Métadonnées pour validation
   },
   
   // Informations d'abonnement
@@ -141,6 +153,45 @@ export const useOnboardingStore = create(
         }
       },
 
+      // 🎭 CALCUL ET ASSIGNATION PERSONA
+      calculateAndAssignPersona: () => {
+        const state = get();
+        const result = calculateAndAssignPersona(state);
+        
+        set((prevState) => ({
+          persona: {
+            assigned: result.assigned,
+            scores: result.scores,
+            confidence: result.confidence,
+            confidenceLevel: result.confidenceLevel,
+            lastCalculated: result.timestamp,
+            metadata: result.metadata,
+          },
+        }));
+        
+        return result.assigned;
+      },
+
+      // Recalcul automatique si données changent
+      autoUpdatePersona: () => {
+        const state = get();
+        const { userInfo, journeyChoice, preferences, melune } = state;
+        
+        // Vérifier si on a assez de données pour calculer
+        const hasMinimumData = 
+          userInfo?.ageRange && 
+          journeyChoice?.selectedOption && 
+          preferences && 
+          melune?.avatarStyle && 
+          melune?.communicationTone;
+          
+        if (hasMinimumData) {
+          return get().calculateAndAssignPersona();
+        }
+        
+        return null;
+      },
+
       // Getter pour compatibilité avec l'ancien context
       getOnboardingData: () => get(),
     }),
@@ -155,6 +206,7 @@ export const useOnboardingStore = create(
         preferences: state.preferences,
         melune: state.melune,
         firstInsight: state.firstInsight,
+        persona: state.persona,  // Nouveau : persister le persona calculé
         subscription: state.subscription,
         completed: state.completed,
       }),

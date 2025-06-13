@@ -13,9 +13,8 @@ import { useAppStore } from '../../../stores/useAppStore';
 import { useCycleStore } from '../../../stores/useCycleStore';
 import { useOnboardingStore } from '../../../stores/useOnboardingStore';
 
-// Import des données d'insights (pour le MVP, utilisons des données statiques)
-import { insights } from '../../../data/insights';
-import { getPersonalizedInsight } from '../../../data/insights-personalized';
+// Import des données d'insights V2 avec sistema de personas
+import { getPersonalizedInsightV2, getPersonalizedInsightCompatible } from '../../../data/insights-personalized-v2';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -29,9 +28,11 @@ export default function HomeScreen() {
     cycleData, 
     preferences, 
     melune, 
+    persona,
     usedInsights, 
     markInsightAsUsed, 
-    resetUsedInsights 
+    resetUsedInsights,
+    calculateAndAssignPersona
   } = useOnboardingStore();
   
   // Récupération du prénom ou fallback si pas encore collecté
@@ -40,13 +41,22 @@ export default function HomeScreen() {
   const phaseInfo = getCurrentPhaseInfo();
   const phase = phaseInfo.phase;
   
-  // 🎯 INSIGHT PERSONNALISÉ avec anti-répétition
-  const insightResult = getPersonalizedInsight(
-    phase, 
-    preferences,
-    melune,
-    usedInsights
-  );
+  // 🎯 INSIGHT PERSONNALISÉ V2 avec sistema de personas
+  const insightResult = persona.assigned 
+    ? getPersonalizedInsightV2(
+        phase, 
+        persona.assigned,
+        preferences,
+        melune,
+        usedInsights,
+        useOnboardingStore.getState()
+      )
+    : getPersonalizedInsightCompatible(
+        phase, 
+        preferences,  // Fallback vers ancien système si pas de persona
+        melune,
+        usedInsights
+      );
   
   const currentInsight = insightResult.content;
   
@@ -62,17 +72,33 @@ export default function HomeScreen() {
     }
   }, [insightResult.id]);
   
-  // 👈 AJOUTER CES LIGNES pour debugger
+  // 👈 DEBUG : Cycle et Persona
   console.log('Données du cycle:', cycleData);
   console.log('Date des dernières règles:', cycleData.lastPeriodDate);
+  console.log('Persona assigné:', persona.assigned);
+  console.log('Insight result:', {
+    content: insightResult.content?.substring(0, 50) + '...',
+    source: insightResult.source,
+    persona: insightResult.persona,
+    relevanceScore: insightResult.relevanceScore
+  });
   
-  // 👈 AJOUTER ce useEffect
+  // 👈 Initialisation du cycle
   useEffect(() => {
     // Si on a une date de règles dans l'onboarding, initialiser le cycle
     if (cycleData.lastPeriodDate) {
       initializeFromOnboarding(cycleData);
     }
   }, [cycleData.lastPeriodDate]); // Se déclenche quand la date change
+  
+  // 🎭 S'assurer que le persona est calculé
+  useEffect(() => {
+    // Si on a des données d'onboarding mais pas de persona assigné, le calculer
+    if (userInfo.ageRange && preferences && melune && !persona.assigned) {
+      console.log('📊 Calcul automatique du persona...');
+      calculateAndAssignPersona();
+    }
+  }, [userInfo.ageRange, preferences, melune, persona.assigned]);
   
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -82,6 +108,11 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Heading1>Bonjour {prenom}</Heading1>
         <BodyText>Jour {phaseInfo.day} • Phase {phaseInfo.name}</BodyText>
+        {persona.assigned && (
+          <BodyText style={styles.personaInfo}>
+            Persona: {persona.assigned} {persona.confidence ? `(${Math.round(persona.confidence * 100)}%)` : ''}
+          </BodyText>
+        )}
         
         {/* Bouton pour activer le mode dev (triple tap) */}
         <TouchableOpacity 
@@ -117,6 +148,12 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: theme.spacing.l,
+  },
+  personaInfo: {
+    fontSize: 12,
+    color: theme.colors.primary.main,
+    marginTop: 4,
+    opacity: 0.8,
   },
   avatarContainer: {
     alignItems: 'center',
