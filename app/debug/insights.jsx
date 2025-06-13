@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { theme } from '../../config/theme';
 import InsightsV2Debug from '../../components/DevNavigation/InsightsV2Debug';
 
-export default function InsightsV2DebugPage() {
+export default function InsightsDebugPage() {
   return (
     <SafeAreaView style={styles.container}>
       <InsightsV2Debug />

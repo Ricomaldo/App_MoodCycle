@@ -5,6 +5,7 @@ import { BodyText, SmallText } from '../Typography';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import { SIMULATION_PROFILES } from '../../config/personaProfiles';
+import { getDateDaysAgo } from '../../utils/dateUtils';
 
 const PERSONAS = [
   { name: 'Emma', emoji: '🌱' },
@@ -60,7 +61,7 @@ export default function PersonaSelector() {
       
       // Données de cycle basiques
       updateCycleData({
-        lastPeriodDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        lastPeriodDate: getDateDaysAgo(7), // Il y a 7 jours
         averageCycleLength: 28,
         averagePeriodLength: 5,
         isRegular: true,

@@ -26,7 +26,8 @@ MoodCycle est une application React Native qui accompagne les femmes dans la com
 ### État & Données (Offline-First)
 - **State Management** : Zustand (migration depuis Context API)
 - **Server State** : TanStack Query v5
-- **Backend** : Supabase (PostgreSQL + Realtime + Auth + Edge Functions)
+- **Backend MVP** : Node.js/Express sur VPS (production prête)
+- **Backend Future** : Migration vers Supabase prévue (PostgreSQL + Realtime + Auth + Edge Functions)
 - **Cache Local** : AsyncStorage + persistence Zustand
 - **Détection Réseau** : @react-native-community/netinfo
 
@@ -36,12 +37,13 @@ MoodCycle est une application React Native qui accompagne les femmes dans la com
 - **Icônes** : @expo/vector-icons (Ionicons)
 - **Fonts** : Quintessential (titres) + Quicksand (corps)
 
-### Fonctionnalités Prévues
-- **Auth** : Supabase Auth (OAuth, Magic Links, Biométrie iOS)
-- **IA** : Edge Functions Supabase pour logique Melune
-- **Insights** : Calculs prédictifs et recommandations personnalisées
-- **Sync Temps Réel** : Supabase Realtime pour multi-appareils
-- **Export Données** : Rapports cycle + insights
+### Backend & API
+- **MVP Actuel** : Serveur Node.js/Express hébergé sur VPS
+- **API REST** : Endpoints pour cycle, chat, insights, auth
+- **Base de données** : PostgreSQL avec connexions optimisées
+- **Auth** : JWT + sessions sécurisées
+- **IA** : Intégration GPT-4 via OpenAI API pour logique Melune
+- **Future** : Migration vers Supabase (Realtime + Edge Functions)
 
 ## 📁 Structure du Projet
 
@@ -71,16 +73,15 @@ MoodCycle/
 │   ├── useOnboardingStore.js     # Gestion onboarding + système personas
 │   └── useAppStore.js            # État global app
 ├── services/                      # 🔌 Services & API
-│   ├── supabase.js               # Configuration client Supabase
-│   ├── api/                      # TanStack Query hooks
-│   │   ├── auth.js              # Authentification
+│   ├── api/                      # TanStack Query hooks pour VPS
+│   │   ├── auth.js              # Authentification JWT
 │   │   ├── cycle.js             # API cycle + insights
-│   │   └── chat.js              # API conversations IA
+│   │   └── chat.js              # API conversations IA via Node.js
 │   ├── offline/                  # Gestion offline-first
 │   │   ├── queue.js             # Queue actions offline
-│   │   └── sync.js              # Synchronisation
+│   │   └── sync.js              # Synchronisation avec VPS
 │   └── storage/                  # Persistence locale
-│       └── cache.js             # Gestion cache
+│       └── cache.js             # Gestion cache AsyncStorage
 ├── components/                    # 🎨 Composants UI
 │   ├── ChatBubble/              # Bulles conversation Melune
 │   ├── CycleWheel/              # Roue interactive cycle
@@ -127,10 +128,12 @@ MoodCycle/
    npm install
    ```
 
-3. **Configuration Supabase** (à venir)
+3. **Configuration Backend**
    ```bash
    cp .env.example .env.local
-   # Ajouter vos clés Supabase
+   # Ajouter l'URL de votre serveur Node.js/Express
+   # REACT_APP_API_URL=https://votre-vps.com/api
+   # REACT_APP_OPENAI_API_KEY=votre-clé-openai (côté serveur)
    ```
 
 4. **Lancer l'application**
@@ -155,22 +158,24 @@ MoodCycle/
 - [x] Système de personas intelligent (5 profils : Emma, Laure, Sylvie, Christine, Clara)
 - [x] Algorithme de mapping automatique (âge + préférences + communication)
 - [x] Insights personnalisés V2 avec variants par persona
-- [x] Interfaces de debug complètes (/debug/persona et /debug/insights-v2)
+- [x] Interfaces de debug complètes (/debug/persona et /debug/insights)
 - [x] Écran sélection d'âge dans onboarding (375-age.jsx)
 
-### 🎯 Phase 3 - Backend Supabase (Prochaine)
-- [ ] Configuration projet Supabase + schéma BDD
-- [ ] Intégration Supabase Auth (OAuth + Magic Links)
+### 🎯 Phase 3 - Backend Production (En cours)
+- [x] Serveur Node.js/Express déployé sur VPS
+- [x] Base de données PostgreSQL configurée
 - [ ] API endpoints pour cycle, chat, insights
-- [ ] Edge Functions pour logique IA Melune
-- [ ] Sync temps réel multi-appareils
+- [ ] Intégration OpenAI GPT-4 pour logique IA Melune
+- [ ] Authentification JWT + gestion sessions
+- [ ] Tests API et documentation Swagger
 
 ### 🚀 Phase 4 - Fonctionnalités Avancées
 - [ ] Calculs prédictifs cycle + ovulation
-- [ ] IA conversationnelle Melune avancée (GPT-4 integration)
+- [ ] IA conversationnelle Melune avancée (intégration GPT-4 via API)
 - [x] Insights personnalisés + recommandations (V2 avec personas)
 - [ ] Export données + rapports
 - [ ] Notifications push intelligentes
+- [ ] Sync temps réel multi-appareils (future migration Supabase)
 
 ### 💎 Phase 5 - Polish & Production
 - [ ] Tests automatisés (Jest + Maestro)

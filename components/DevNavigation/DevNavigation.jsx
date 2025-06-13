@@ -46,19 +46,37 @@ export default function DevNavigation() {
       });
     } else {
       // Avancer de 7 jours
-      const newDay = Math.min(currentCycle.currentDay + 7, currentCycle.length || 28);
-      let newPhase = 'follicular';
+      const cycleLength = currentCycle.length || 28;
+      let newDay = currentCycle.currentDay + 7;
       
-      if (newDay <= 5) newPhase = 'menstrual';
-      else if (newDay <= 13) newPhase = 'follicular';
-      else if (newDay <= 17) newPhase = 'ovulatory';
-      else newPhase = 'luteal';
-      
-      cycle.updateCurrentCycle({
-        ...currentCycle,
-        currentDay: newDay,
-        currentPhase: newPhase,
-      });
+      // Si on dépasse la fin du cycle, recommencer un nouveau cycle
+      if (newDay > cycleLength) {
+        newDay = newDay - cycleLength; // Calculer le jour dans le nouveau cycle
+        // Créer un nouveau cycle
+        const newStartDate = new Date(currentCycle.startDate);
+        newStartDate.setDate(newStartDate.getDate() + cycleLength);
+        
+        cycle.updateCurrentCycle({
+          startDate: newStartDate.toISOString(),
+          currentDay: newDay,
+          currentPhase: newDay <= 5 ? 'menstrual' : 'follicular',
+          length: cycleLength,
+        });
+      } else {
+        // Rester dans le cycle actuel
+        let newPhase = 'follicular';
+        
+        if (newDay <= 5) newPhase = 'menstrual';
+        else if (newDay <= 13) newPhase = 'follicular';
+        else if (newDay <= 17) newPhase = 'ovulatory';
+        else newPhase = 'luteal';
+        
+        cycle.updateCurrentCycle({
+          ...currentCycle,
+          currentDay: newDay,
+          currentPhase: newPhase,
+        });
+      }
     }
   };
 
@@ -124,6 +142,11 @@ export default function DevNavigation() {
             <SmallText style={styles.stateText}>
               Messages chat: {chat.messages.length}
             </SmallText>
+            {onboarding.persona.assigned && (
+              <SmallText style={styles.personaText}>
+                🎭 Persona: {onboarding.persona.assigned} {onboarding.persona.confidence ? `(${Math.round(onboarding.persona.confidence * 100)}%)` : ''}
+              </SmallText>
+            )}
           </View>
 
           {/* Navigation rapide */}
@@ -227,6 +250,12 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 4,
     fontSize: 10,
+  },
+  personaText: {
+    color: '#FF9800',
+    marginBottom: 4,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   navButton: {
     backgroundColor: '#E91E63',

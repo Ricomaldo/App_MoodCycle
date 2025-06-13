@@ -13,7 +13,7 @@ export default function MeluneAvatar({ phase = 'menstrual', size = 'large', styl
     }
   };
   
-  const sizeValue = size === 'large' ? 200 : size === 'medium' ? 120 : 80;
+  const sizeValue = size === 'large' ? 160 : size === 'medium' ? 120 : 80;
   const borderColor = theme.colors.phases?.[phase] || theme.colors.primary;
   
   return (

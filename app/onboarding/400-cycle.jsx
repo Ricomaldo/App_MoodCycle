@@ -7,6 +7,7 @@ import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { theme } from '../../config/theme';
 import MeluneAvatar from '../../components/MeluneAvatar';
 import ChatBubble from '../../components/ChatBubble';
+import { formatDateFrench } from '../../utils/dateUtils';
 
 // import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -82,13 +83,8 @@ export default function CycleScreen() {
     }
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
+  // Utilisation de la fonction centralisée pour le formatage des dates
+  const formatDate = formatDateFrench;
 
   const getMeluneMessage = () => {
     switch (step) {

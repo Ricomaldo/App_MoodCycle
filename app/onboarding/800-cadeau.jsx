@@ -10,6 +10,7 @@ import ChatBubble from '../../components/ChatBubble';
 
 // 🌟 NOUVEAU : Import du système d'enrichissement contextuel unifié
 import { enrichInsightWithContext } from '../../data/insights-personalized-v2';
+import { getDaysSinceLastPeriod, calculateCurrentPhase } from '../../utils/dateUtils';
 
 export default function CadeauScreen() {
   const router = useRouter();
@@ -81,7 +82,7 @@ export default function CadeauScreen() {
     const { journeyChoice, cycleData, preferences, melune } = onboardingData;
     
     // Calculer la phase estimée du cycle
-    const estimatedPhase = calculateCurrentPhase(cycleData);
+    const estimatedPhase = calculateCurrentPhaseFromCycleData(cycleData);
     
     // Identifier les préférences principales (score >= 4)
     const strongPreferences = Object.entries(preferences || {})
@@ -114,20 +115,24 @@ export default function CadeauScreen() {
     return enrichInsightWithContext(combinedMessage, onboardingData, estimatedPhase);
   };
 
-  const calculateCurrentPhase = (cycleData) => {
+  const calculateCurrentPhaseFromCycleData = (cycleData) => {
     if (!cycleData?.lastPeriodDate) return 'follicular';
     
-    const lastPeriod = new Date(cycleData.lastPeriodDate);
-    const today = new Date();
-    const daysSinceLastPeriod = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
+    const daysSinceLastPeriod = getDaysSinceLastPeriod(cycleData.lastPeriodDate);
     const cycleLength = cycleData.averageCycleLength || 28;
+    const periodLength = cycleData.averagePeriodLength || 5;
     
-    if (daysSinceLastPeriod < 0) return 'menstrual';
-    if (daysSinceLastPeriod <= 5) return 'menstrual';
-    if (daysSinceLastPeriod <= cycleLength / 2 - 3) return 'follicular';
-    if (daysSinceLastPeriod <= cycleLength / 2 + 2) return 'ovulation';
-    if (daysSinceLastPeriod < cycleLength - 3) return 'luteal';
-    return 'premenstrual';
+    const phase = calculateCurrentPhase(daysSinceLastPeriod, cycleLength, periodLength);
+    
+    // Mapping pour les noms utilisés dans ce contexte spécifique
+    const phaseMapping = {
+      'menstrual': 'menstrual',
+      'follicular': 'follicular', 
+      'ovulatory': 'ovulation',  // Spécificité de ce fichier
+      'luteal': 'luteal'
+    };
+    
+    return phaseMapping[phase] || 'follicular';
   };
 
   const getPhaseMessage = (phase) => {

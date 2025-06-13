@@ -111,26 +111,26 @@ export const PERSONA_PROFILES = {
   clara: {
     id: 'clara',
     name: 'Clara',
-    description: 'Enthousiaste connectée maximisant les fonctionnalités (26-35 ans)',
+    description: 'Power user enthousiaste qui maximise toutes les fonctionnalités (26-35 ans)',
     ageRange: ['26-35'],
-    preferredJourney: ['hiding_nature'], // Révélation avec approche technique
-    strongPreferences: ['moods', 'phases'], // Préférences élevées (4)
-    communicationStyle: ['professional'], // Ton professionnel
+    preferredJourney: ['emotional_control'], // ✅ Unique - contrôle total
+    strongPreferences: ['symptoms', 'moods', 'phases', 'rituals'], // ✅ 4 préférences fortes
+    communicationStyle: ['inspiring'], // ✅ Unique - évangéliste tech
     avatarStyle: ['modern'], // Avatar moderne
-    // Profil de préférences selon tableau simulation (expertise équilibrée)
+    // Profil de préférences "everything maxed out"
     referencePreferences: {
-      symptoms: 3,       // Modéré
-      moods: 4,         // Préférence forte (analyse émotionnelle)
-      phyto: 2,         // Modéré
-      phases: 4,        // Préférence forte (optimisation cyclique)
-      lithotherapy: 1,  // Faible (approche scientifique)
-      rituals: 3        // Modéré
+      symptoms: 5,       // Max - track absolument tout
+      moods: 5,         // Max - analyse patterns
+      phyto: 4,         // Fort - teste solutions
+      phases: 5,        // Max - optimise cycles
+      lithotherapy: 3,  // Modéré - curieuse
+      rituals: 5        // Max - fan de fonctionnalités
     },
     coefficients: {
-      journey: 1.0,
-      age: 1.1,
-      preferences: 1.1, // Équilibrée plutôt qu'expertise généralisée
-      communication: 1.2
+      journey: 1.2,      // Bonus pour emotional_control
+      age: 1.0,
+      preferences: 1.3,  // ✅ BONUS POWER USER - pénalise les profils "moyens"
+      communication: 1.1
     }
   }
 };
@@ -263,9 +263,19 @@ export const SIMULATION_PROFILES = {
     melune: { avatarStyle: 'mystique', communicationTone: 'inspiring' }
   },
   clara: {
-    journeyChoice: { selectedOption: 'hiding_nature' },
+    journeyChoice: { selectedOption: 'emotional_control' }, // ✅ Unique
     userInfo: { ageRange: '26-35' },
-    preferences: { symptoms: 3, moods: 4, phyto: 2, phases: 4, lithotherapy: 1, rituals: 3 },
-    melune: { avatarStyle: 'modern', communicationTone: 'professional' }
+    preferences: { 
+      symptoms: 5,      // ✅ Max out
+      moods: 5,        // ✅ Max out  
+      phyto: 4,        // ✅ Fort
+      phases: 5,       // ✅ Max out
+      lithotherapy: 3, // ✅ Modéré
+      rituals: 5       // ✅ Max out
+    },
+    melune: { 
+      avatarStyle: 'modern', 
+      communicationTone: 'inspiring' // ✅ Unique
+    }
   }
 }; 

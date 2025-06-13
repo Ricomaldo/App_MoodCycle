@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../config/theme';
 import phases from '../data/phases.json';
+import { getDaysDifference, calculateCurrentPhase, getCurrentCycleDay } from '../utils/dateUtils.js';
 
 export const useCycleStore = create(
   persist(
@@ -90,12 +91,11 @@ export const useCycleStore = create(
           },
         })),
       
-      // Calculs utilitaires
-      calculateCurrentPhase: (currentDay, cycleLength = 28) => {
-        if (currentDay <= 5) return 'menstrual';
-        if (currentDay <= Math.floor(cycleLength / 2) - 2) return 'follicular';
-        if (currentDay <= Math.floor(cycleLength / 2) + 2) return 'ovulatory';
-        return 'luteal';
+      // Calculs utilitaires (utilise dateUtils centralisé)
+      calculateCurrentPhase: (currentDay, cycleLength = 28, periodLength = 5) => {
+        // Convertir currentDay en daysSinceLastPeriod pour utiliser la fonction centralisée
+        const daysSinceLastPeriod = currentDay - 1;
+        return calculateCurrentPhase(daysSinceLastPeriod, cycleLength, periodLength);
       },
       
       getCurrentPhaseInfo: () => {
@@ -144,14 +144,12 @@ export const useCycleStore = create(
       
       // Nouvelle fonction pour initialiser depuis l'onboarding
       initializeFromOnboarding: (onboardingCycleData) => {
-        const { lastPeriodDate, averageCycleLength = 28 } = onboardingCycleData;
+        const { lastPeriodDate, averageCycleLength = 28, averagePeriodLength = 5 } = onboardingCycleData;
         
         if (lastPeriodDate) {
-          const today = new Date();
-          const lastPeriod = new Date(lastPeriodDate);
-          const diffDays = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
-          const currentDay = (diffDays % averageCycleLength) + 1;
-          const currentPhase = get().calculateCurrentPhase(currentDay, averageCycleLength);
+          const diffDays = getDaysDifference(lastPeriodDate);
+          const currentDay = getCurrentCycleDay(diffDays, averageCycleLength);
+          const currentPhase = calculateCurrentPhase(diffDays, averageCycleLength, averagePeriodLength);
           
           set((state) => ({
             currentCycle: {

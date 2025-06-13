@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { theme } from '../../../config/theme';
 import CycleWheel from '../../../components/CycleWheel';
 import { Heading, BodyText, Caption } from '../../../components/Typography';
+import DevNavigation from '../../../components/DevNavigation/DevNavigation';
 import { useCycleStore } from '../../../stores/useCycleStore';
 import { useOnboardingStore } from '../../../stores/useOnboardingStore';
 import phases from '../../../data/phases.json';
@@ -38,6 +39,9 @@ export default function CycleScreen() {
   
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* DevNavigation pour le développement */}
+      <DevNavigation />
+      
       <Heading style={styles.title}>Mon Cycle</Heading>
       
       <View style={styles.infoContainer}>

@@ -3,17 +3,50 @@
 // Transforme OnboardingStore → Payload API
 
 import { useOnboardingStore } from '../stores/useOnboardingStore.js';
+import { getDaysSinceLastPeriod, calculateCurrentPhase } from '../utils/dateUtils.js';
 
 class ContextFormatter {
   
+  // ✅ Cache statique pour éviter recalculs
+  static _cache = new Map();
+  static _cacheTimeout = 5 * 60 * 1000; // 5 minutes
+  
   /**
-   * 🎯 FONCTION PRINCIPALE
+   * 🎯 FONCTION PRINCIPALE OPTIMISÉE
    * Transforme le store complet en contexte API
    */
   static formatForAPI(onboardingData = null) {
-    // Récupérer données du store si pas fournies
     const data = onboardingData || useOnboardingStore.getState();
     
+    // ✅ Cache basé sur hash des données importantes
+    const cacheKey = this._generateCacheKey(data);
+    const cached = this._cache.get(cacheKey);
+    
+    if (cached && (Date.now() - cached.timestamp) < this._cacheTimeout) {
+      return cached.result;
+    }
+
+    // Calcul seulement si pas en cache
+    const result = this._computeContext(data);
+    
+    // ✅ Stocker en cache
+    this._cache.set(cacheKey, {
+      result,
+      timestamp: Date.now()
+    });
+
+    // ✅ Nettoyage automatique si cache trop volumineux
+    if (this._cache.size > 50) {
+      this.clearExpiredCache();
+    }
+
+    return result;
+  }
+
+  /**
+   * 🔧 CALCUL CONTEXTE (logique métier conservée)
+   */
+  static _computeContext(data) {
     // Vérifier si persona est calculé, sinon le calculer
     const persona = this.ensurePersonaCalculated(data);
     
@@ -44,10 +77,27 @@ class ContextFormatter {
   }
 
   /**
-   * 🧮 ASSURER QUE LE PERSONA EST CALCULÉ
+   * 🔑 GÉNÉRATION CLÉ DE CACHE
+   */
+  static _generateCacheKey(data) {
+    const keyData = {
+      persona: data.persona?.assigned,
+      personaTimestamp: data.persona?.lastCalculated,
+      preferences: data.preferences,
+      userAge: data.userInfo?.ageRange,
+      journey: data.journeyChoice?.selectedOption,
+      lastPeriod: data.cycleData?.lastPeriodDate,
+      melune: data.melune?.communicationTone
+    };
+    
+    return JSON.stringify(keyData);
+  }
+
+  /**
+   * 🧮 ASSURER QUE LE PERSONA EST CALCULÉ (OPTIMISÉ)
    */
   static ensurePersonaCalculated(data) {
-    // Si persona déjà assigné récemment, l'utiliser
+    // Si persona valide et récent, retourner directement
     if (data.persona?.assigned && data.persona?.lastCalculated) {
       const hoursSinceCalculation = (Date.now() - data.persona.lastCalculated) / (1000 * 60 * 60);
       if (hoursSinceCalculation < 24) { // Valide pendant 24h
@@ -55,14 +105,43 @@ class ContextFormatter {
       }
     }
     
-    // Sinon calculer à la volée
+    // ✅ Calcul optimisé pour éviter blocage
     try {
       const store = useOnboardingStore.getState();
-      return store.calculateAndAssignPersona();
+      // ✅ Utiliser autoUpdate si disponible (plus rapide)
+      return store.autoUpdatePersona() || store.calculateAndAssignPersona();
     } catch (error) {
       console.warn('🚨 Erreur calcul persona, fallback emma:', error);
       return 'emma'; // Persona par défaut
     }
+  }
+
+  /**
+   * 🧹 NETTOYAGE CACHE EXPIRÉ
+   */
+  static clearExpiredCache() {
+    const now = Date.now();
+    let cleanedCount = 0;
+    
+    for (const [key, value] of this._cache.entries()) {
+      if (now - value.timestamp > this._cacheTimeout) {
+        this._cache.delete(key);
+        cleanedCount++;
+      }
+    }
+    
+    if (cleanedCount > 0) {
+      console.log(`🧹 Cache nettoyé: ${cleanedCount} entrées expirées supprimées`);
+    }
+  }
+
+  /**
+   * 🔄 INVALIDATION MANUELLE DU CACHE
+   */
+  static invalidateCache() {
+    const size = this._cache.size;
+    this._cache.clear();
+    console.log(`🔄 Cache invalidé: ${size} entrées supprimées`);
   }
 
   /**
@@ -89,23 +168,21 @@ class ContextFormatter {
     }
     
     try {
-      const lastPeriod = new Date(cycleData.lastPeriodDate);
-      const today = new Date();
-      const daysSinceLastPeriod = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
+      const daysSinceLastPeriod = getDaysSinceLastPeriod(cycleData.lastPeriodDate);
       const cycleLength = cycleData.averageCycleLength || 28;
+      const periodLength = cycleData.averagePeriodLength || 5;
       
-      // Logique simplifiée des phases
-      if (daysSinceLastPeriod <= (cycleData.averagePeriodLength || 5)) {
-        return 'menstruelle';
-      } else if (daysSinceLastPeriod <= 13) {
-        return 'folliculaire';
-      } else if (daysSinceLastPeriod <= 16) {
-        return 'ovulatoire';
-      } else if (daysSinceLastPeriod <= cycleLength) {
-        return 'lutéale';
-      } else {
-        return 'retard/irrégulier';
-      }
+      const phase = calculateCurrentPhase(daysSinceLastPeriod, cycleLength, periodLength);
+      
+      // Mapping vers les noms français utilisés dans ce contexte
+      const phaseMapping = {
+        'menstrual': 'menstruelle',
+        'follicular': 'folliculaire', 
+        'ovulatory': 'ovulatoire',
+        'luteal': 'lutéale'
+      };
+      
+      return phaseMapping[phase] || 'non définie';
     } catch (error) {
       console.warn('🚨 Erreur calcul phase:', error);
       return 'non définie';
@@ -178,8 +255,34 @@ class ContextFormatter {
     
     console.log('🎯 Context généré:', context);
     console.log('✅ Validation:', validation);
+    console.log('📊 Cache stats:', this.getCacheStats());
     
     return { context, validation };
+  }
+
+  /**
+   * 📊 STATISTIQUES DU CACHE
+   */
+  static getCacheStats() {
+    const now = Date.now();
+    let validEntries = 0;
+    let expiredEntries = 0;
+    
+    for (const [key, value] of this._cache.entries()) {
+      if (now - value.timestamp < this._cacheTimeout) {
+        validEntries++;
+      } else {
+        expiredEntries++;
+      }
+    }
+    
+    return {
+      totalEntries: this._cache.size,
+      validEntries,
+      expiredEntries,
+      hitRatio: validEntries / Math.max(1, this._cache.size),
+      cacheTimeout: this._cacheTimeout / 1000 + 's'
+    };
   }
   
   /**
@@ -191,14 +294,18 @@ class ContextFormatter {
     return {
       formatForAPI: () => this.formatForAPI(onboardingData),
       formatCompact: () => this.formatCompact(onboardingData),
-      getCurrentContext: () => this.formatForAPI(onboardingData)
+      getCurrentContext: () => this.formatForAPI(onboardingData),
+      getCacheStats: () => this.getCacheStats(),
+      invalidateCache: () => this.invalidateCache()
     };
   }
 }
 
 export default ContextFormatter;
 
-// Export des fonctions utilitaires
+// Export des fonctions utilitaires + nouvelles optimisations
 export const formatContextForAPI = ContextFormatter.formatForAPI;
 export const formatCompactContext = ContextFormatter.formatCompact;
 export const validateAPIContext = ContextFormatter.validateContext;
+export const getCacheStats = ContextFormatter.getCacheStats;
+export const invalidateContextCache = ContextFormatter.invalidateCache;

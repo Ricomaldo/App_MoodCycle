@@ -12,22 +12,48 @@ import MeluneAvatar from '../../../components/MeluneAvatar';
 import ChatBubble from '../../../components/ChatBubble';
 import { theme } from '../../../config/theme';
 import ChatService from '../../../services/ChatService';
+import DevNavigation from '../../../components/DevNavigation/DevNavigation';
 
-// Store pour récupérer la phase actuelle
+// Stores pour récupérer les données
 import { useCycleStore } from '../../../stores/useCycleStore';
+import { useOnboardingStore } from '../../../stores/useOnboardingStore';
 
 export default function ChatScreen() {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Bonjour! Je suis Melune, ta guide cyclique. Comment puis-je t'aider aujourd'hui?", isUser: false }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const insets = useSafeAreaInsets();
   
-  // Récupération de la phase actuelle du cycle
+  // Récupération des données personnalisées
   const { getCurrentPhaseInfo } = useCycleStore();
+  const { userInfo, melune } = useOnboardingStore();
+  
   const phaseInfo = getCurrentPhaseInfo();
   const phase = phaseInfo.phase;
+  const prenom = userInfo.prenom;
+  
+  // Message d'accueil personnalisé
+  const generateWelcomeMessage = () => {
+    const tone = melune?.communicationTone || 'friendly';
+    
+    if (prenom) {
+      if (tone === 'friendly') {
+        return `Salut ${prenom} ! C'est Melune 💜 Comment te sens-tu aujourd'hui ?`;
+      } else if (tone === 'inspiring') {
+        return `Bonjour ${prenom}! Je suis Melune, ta guide vers ton épanouissement cyclique ✨ Quelle énergie veux-tu cultiver aujourd'hui ?`;
+      } else {
+        return `Bonjour ${prenom}! Je suis Melune, votre accompagnatrice spécialisée. Comment puis-je vous aider aujourd'hui ?`;
+      }
+    }
+    return "Bonjour! Je suis Melune, ta guide cyclique. Comment puis-je t'aider aujourd'hui?";
+  };
+  
+  // Initialisation des messages avec accueil personnalisé
+  useEffect(() => {
+    setMessages([
+      { id: 1, text: generateWelcomeMessage(), isUser: false }
+    ]);
+  }, [prenom, melune?.communicationTone]);
   
   // Initialisation du ChatService au montage
   useEffect(() => {
@@ -100,8 +126,15 @@ export default function ChatScreen() {
     <View style={[styles.container, { 
       paddingTop: insets.top,
     }]}>
+      {/* DevNavigation pour le développement */}
+      <DevNavigation />
+      
       <View style={styles.avatarContainer}>
-        <MeluneAvatar phase={phase} size="small" />
+        <MeluneAvatar 
+          phase={phase} 
+          size="small" 
+          style={melune?.avatarStyle || 'classic'} 
+        />
       </View>
       
       <ScrollView 

@@ -108,11 +108,6 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Heading1>Bonjour {prenom}</Heading1>
         <BodyText>Jour {phaseInfo.day} • Phase {phaseInfo.name}</BodyText>
-        {persona.assigned && (
-          <BodyText style={styles.personaInfo}>
-            Persona: {persona.assigned} {persona.confidence ? `(${Math.round(persona.confidence * 100)}%)` : ''}
-          </BodyText>
-        )}
         
         {/* Bouton pour activer le mode dev (triple tap) */}
         <TouchableOpacity 
@@ -149,12 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: theme.spacing.l,
   },
-  personaInfo: {
-    fontSize: 12,
-    color: theme.colors.primary.main,
-    marginTop: 4,
-    opacity: 0.8,
-  },
+
   avatarContainer: {
     alignItems: 'center',
     marginVertical: theme.spacing.xl,

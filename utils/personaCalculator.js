@@ -1,6 +1,6 @@
 // utils/personaCalculator.js
 // Algorithme de calcul et scoring des personas MoodCycle
-// Version simplifiée compatible avec config/personaProfiles.js
+// Version corrigée pour fonctionner avec les vraies données onboarding
 
 import { PERSONA_PROFILES, SCORING_WEIGHTS, SCORING_MODIFIERS } from '../config/personaProfiles.js';
 
@@ -53,35 +53,16 @@ const calculatePersonaScore = (userData, personaName) => {
 
 /**
  * 🌟 CALCUL SCORE CHOIX DE VOYAGE
+ * Utilise les vraies valeurs de l'onboarding: 'body_disconnect', 'hiding_nature', 'emotional_control'
  */
 const calculateJourneyScore = (userData, reference) => {
-  const userJourney = userData.journey || userData.journeyChoice;
+  const userJourney = userData.journeyChoice?.selectedOption || userData.journey;
   const refJourneys = reference.preferredJourney;
   
   if (!userJourney || !refJourneys) return 0;
   
-  // Correspondance exacte
-  if (refJourneys.includes(userJourney)) {
-    return 1;
-  }
-  
-  // Correspondances partielles selon logique métier
-  const partialMatches = {
-    'decouverte': ['comprehension'],
-    'optimisation': ['comprehension'],
-    'renaissance': ['sagesse'],
-    'transmission': ['sagesse']
-  };
-  
-  if (partialMatches[userJourney]) {
-    for (const partial of partialMatches[userJourney]) {
-      if (refJourneys.includes(partial)) {
-        return 0.6;
-      }
-    }
-  }
-  
-  return 0;
+  // Correspondance exacte avec les vraies valeurs onboarding
+  return refJourneys.includes(userJourney) ? 1 : 0;
 };
 
 /**
@@ -119,87 +100,71 @@ const calculateAgeScore = (userData, reference) => {
 
 /**
  * 💝 CALCUL SCORE PRÉFÉRENCES (Cœur de l'algorithme)
+ * Compare directement les scores 0-5 avec les profils de référence
  */
 const calculatePreferencesScore = (userData, reference) => {
   const userPrefs = userData.preferences;
-  const refPrefs = reference.strongPreferences;
+  const refPrefs = reference.referencePreferences;
   
   if (!userPrefs || !refPrefs) return 0;
   
-  let matches = 0;
-  let totalUserPrefs = 0;
+  let totalDistance = 0;
+  let prefCount = 0;
   
-  // Convertir préférences utilisateur en array si nécessaire
-  const userPrefArray = Array.isArray(userPrefs) ? userPrefs : 
-    Object.entries(userPrefs).filter(([key, value]) => value >= 4).map(([key]) => key);
+  // ✅ BONUS POWER USER : détecter les profils "tout à fond"
+  const userHighPrefs = Object.values(userPrefs).filter(val => val >= 4).length;
+  const refHighPrefs = Object.values(refPrefs).filter(val => val >= 4).length;
   
-  totalUserPrefs = userPrefArray.length;
-  
-  if (totalUserPrefs === 0) return 0;
-  
-  // Compter les correspondances
-  userPrefArray.forEach(userPref => {
-    if (refPrefs.includes(userPref)) {
-      matches += 1;
+  // Calculer distance normale
+  Object.entries(refPrefs).forEach(([pref, refValue]) => {
+    if (userPrefs[pref] !== undefined) {
+      const distance = Math.abs(userPrefs[pref] - refValue);
+      totalDistance += distance;
+      prefCount++;
     }
   });
   
-  // Score basé sur le pourcentage de correspondances
-  const score = matches / totalUserPrefs;
+  if (prefCount === 0) return 0;
   
-  // Bonus pour correspondances multiples
-  if (matches >= 2) {
-    return Math.min(1, score * 1.2);
+  const avgDistance = totalDistance / prefCount;
+  const maxDistance = 5;
+  let score = Math.max(0, 1 - (avgDistance / maxDistance));
+  
+  // ✅ BONUS CLARA : Si user et référence ont tous deux 4+ préférences fortes
+  if (userHighPrefs >= 4 && refHighPrefs >= 4) {
+    score *= 1.5; // Bonus power user
   }
   
-  return score;
+  return Math.min(1, score);
 };
 
 /**
  * 💬 CALCUL SCORE COMMUNICATION
+ * Utilise les vraies valeurs: 'friendly', 'professional', 'inspiring'
  */
 const calculateCommunicationScore = (userData, reference) => {
-  const userComm = userData.communication;
+  const userComm = userData.melune?.communicationTone || userData.communication;
   const refComm = reference.communicationStyle;
   
   if (!userComm || !refComm) return 0;
   
-  // Convertir en array si nécessaire
-  const userCommArray = Array.isArray(userComm) ? userComm : [userComm];
-  
-  // Chercher correspondances
-  for (const userStyle of userCommArray) {
-    if (refComm.includes(userStyle)) {
-      return 1; // Correspondance exacte
-    }
-  }
-  
-  // Correspondances partielles selon logique métier
-  const styleAffinities = {
-    'bienveillant': ['educatif'],
-    'direct': ['pratique'],
-    'inspirant': ['profond'],
-    'sage': ['spirituel'],
-    'scientifique': ['precis']
-  };
-  
-  for (const userStyle of userCommArray) {
-    if (styleAffinities[userStyle]) {
-      for (const affinity of styleAffinities[userStyle]) {
-        if (refComm.includes(affinity)) {
-          return 0.5; // Correspondance partielle
-        }
-      }
-    }
-  }
-  
-  return 0;
+  // Correspondance exacte avec les vraies valeurs onboarding
+  return refComm.includes(userComm) ? 1 : 0;
 };
 
 /**
  * 🏆 ASSIGNER LE MEILLEUR PERSONA
+ * Point d'entrée principal - mappe les données onboarding au format attendu
  */
-export const calculateAndAssignPersona = (userData) => {
+export const calculateAndAssignPersona = (onboardingData) => {
+  // Mapper données onboarding vers format attendu par l'algorithme
+  const userData = {
+    journeyChoice: onboardingData.journeyChoice,
+    ageRange: onboardingData.userInfo?.ageRange,
+    preferences: onboardingData.preferences,
+    melune: onboardingData.melune
+  };
+  
   const scores = calculatePersonaScores(userData);
   
   // Trouver le persona avec le meilleur score
@@ -213,37 +178,65 @@ export const calculateAndAssignPersona = (userData) => {
     }
   });
   
-  // Calculer confiance (différence avec 2ème meilleur)
+  // ✅ CORRECTION : Confiance = score absolu du persona assigné
   const sortedScores = Object.entries(scores)
     .sort(([,a], [,b]) => b - a);
   
-  const confidence = sortedScores.length > 1 ? 
-    sortedScores[0][1] - sortedScores[1][1] : bestScore;
+  // Confiance basée sur le score absolu (déjà sur 100, donc /100 pour 0-1)
+  const confidenceRaw = bestScore / 100;
+  
+  // Déterminer niveau de confiance basé sur le score absolu
+  let confidenceLevel;
+  if (confidenceRaw >= 0.8) confidenceLevel = 'high';   // 80%+
+  else if (confidenceRaw >= 0.6) confidenceLevel = 'medium'; // 60%+
+  else confidenceLevel = 'low';                         // <60%
   
   return {
     assigned: bestPersona,
     scores,
-    confidence: Math.min(100, Math.max(0, confidence)),
+    confidence: Math.min(1, Math.max(0, confidenceRaw)),
+    confidenceLevel,
+    timestamp: Date.now(),
     metadata: {
-      timestamp: Date.now(),
-      algorithm: 'v2_simplified'
+      algorithm: 'v3_onboarding_corrected',
+      dataMapping: userData
     }
   };
 };
 
 /**
- * 🧪 FONCTION DE TEST
+ * 🧪 FONCTION DE TEST AVEC VRAIES DONNÉES
  */
 export const testPersonaMapping = () => {
-  const testData = {
-    journey: 'decouverte',
-    ageRange: '18-25',
-    preferences: ['medical', 'naturopathie'],
-    communication: ['bienveillant']
+  // Données de test basées sur le vrai format onboarding
+  const testProfiles = {
+    clara: {
+      journeyChoice: { selectedOption: 'body_disconnect' },
+      userInfo: { ageRange: '26-35' },
+      preferences: { symptoms: 2, moods: 5, phyto: 1, phases: 5, lithotherapy: 1, rituals: 2 },
+      melune: { communicationTone: 'friendly' }
+    },
+    laure: {
+      journeyChoice: { selectedOption: 'hiding_nature' },
+      userInfo: { ageRange: '26-35' },
+      preferences: { symptoms: 3, moods: 4, phyto: 3, phases: 5, lithotherapy: 2, rituals: 4 },
+      melune: { communicationTone: 'professional' }
+    }
   };
   
-  const result = calculateAndAssignPersona(testData);
-  console.log('🧪 Test Persona Mapping:', result);
+  const results = {};
   
-  return result;
+  Object.entries(testProfiles).forEach(([expectedPersona, testData]) => {
+    const result = calculateAndAssignPersona(testData);
+    results[expectedPersona] = {
+      expected: expectedPersona,
+      assigned: result.assigned,
+      confidence: result.confidence,
+      correct: result.assigned === expectedPersona,
+      scores: result.scores
+    };
+  });
+  
+  console.log('🧪 Test Persona Mapping Results:', results);
+  return results;
 }; 
