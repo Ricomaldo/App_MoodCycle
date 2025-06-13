@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import MeluneAvatar from '../../../components/MeluneAvatar';
 import ChatBubble from '../../../components/ChatBubble';
 import { theme } from '../../../config/theme';
+import ContextFormatter from '../services/ContextFormatter';
 
 // Exemples de messages pré-définis pour le MVP
 const PREDEFINED_RESPONSES = {
@@ -27,7 +28,7 @@ export default function ChatScreen() {
   const [phase] = useState('follicular');
   const insets = useSafeAreaInsets();
   
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     
     // Ajouter le message de l'utilisatrice
@@ -36,12 +37,24 @@ export default function ChatScreen() {
     setInput('');
     
     // Simuler une réponse de Melune
-    setTimeout(() => {
+    setTimeout(async () => {
       const response = PREDEFINED_RESPONSES[input] || 
         "Je comprends. Pendant ta phase folliculaire actuelle, ton énergie augmente progressivement. C'est un bon moment pour de nouvelles initiatives.";
       
       const meluneMessage = { id: Date.now() + 1, text: response, isUser: false };
       setMessages(prev => [...prev, meluneMessage]);
+
+      const context = ContextFormatter.formatForAPI();
+      
+      // Envoyer à ton API
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: input,
+          context
+        })
+      });
     }, 1000);
   };
   
